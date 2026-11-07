@@ -8,7 +8,7 @@ const SIDE = { left: "vasemmalle", right: "oikealle" };
 const fi: Messages = {
   meta: {
     title: "Takomo Fit",
-    pages: { live: "Takomo Fit", guided: "Ohjattu Takomo Fit", spec: "Sinun Takomo Fit" },
+    pages: { live: "Takomo Fit", guided: "Ohjattu Takomo Fit", spec: "Sinun Takomo Fit", phone: "Puhelimen kamera" },
     description: `Täysi Takomo 7-raudan sovitus puhelimellasi ${N}n, Takomon tekoälysovittajan, kanssa: suositus, `
       + "perustelut ja kuinka varmoja olemme.",
   },
@@ -118,6 +118,19 @@ const fi: Messages = {
     notNow: "Ei nyt",
     openFull: "Avaa koko erittely",
     newTab: `Avautuu uuteen välilehteen, joten ${N} pysyy linjalla.`,
+  },
+  phone: {
+    here: "Tämä tietokone", phone: "Puhelimeni",
+    scan: "Skannaa puhelimella",
+    scanTip: `Avaa tämän vaiheen puhelimessa. ${N} jatkaa täällä.`,
+    waiting: "Odotetaan puhelinta…",
+    connected: "Puhelin yhdistetty. Jatka siellä.",
+    expired: "Koodi vanheni.", newCode: "Uusi koodi",
+    failed: "Koodia ei saatu tehtyä. Käytä tämän tietokoneen kameraa.",
+    paired: "Yhdistetty tietokoneeseesi",
+    sent: "Lähetetty. Palaa tietokoneelle.",
+    sendFailed: "Lähetys ei onnistunut. Tarkista yhteys.", retry: "Yritä uudelleen",
+    gone: "Linkki on vanhentunut. Skannaa uusi koodi tietokoneelta.",
   },
 
   agent: {

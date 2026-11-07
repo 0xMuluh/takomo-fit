@@ -5,7 +5,7 @@ type Dir = "left" | "right" | "both";
 const en = {
   meta: {
     title: "Takomo Fit",
-    pages: { live: "Your Takomo Fit", guided: "Guided Takomo Fit", spec: "Your Takomo Fit" },
+    pages: { live: "Your Takomo Fit", guided: "Guided Takomo Fit", spec: "Your Takomo Fit", phone: "Phone camera" },
     description: `A full Takomo 7-iron fitting from your phone with ${N}, Takomo's AI fitter: the spec, the reasons, and how sure we are.`,
   },
   switcher: { language: "Language", units: "Units", imperial: "yd · mph", metric: "m · km/h" },
@@ -114,6 +114,19 @@ const en = {
     notNow: "Not now",
     openFull: "Open the full breakdown",
     newTab: `Opens in a new tab so ${N} stays on the line.`,
+  },
+  phone: {
+    here: "This computer", phone: "My phone",
+    scan: "Scan with your phone",
+    scanTip: `Opens this step on your phone. ${N} stays here.`,
+    waiting: "Waiting for your phone…",
+    connected: "Phone connected. Carry on there.",
+    expired: "Code expired.", newCode: "New code",
+    failed: "Couldn't make a code. Use this computer instead.",
+    paired: "Linked to your computer",
+    sent: "Sent. Back to your computer.",
+    sendFailed: "Couldn't send. Check your connection.", retry: "Try again",
+    gone: "This link has expired. Scan a new code on your computer.",
   },
 
   agent: {

@@ -17,6 +17,7 @@ export type LaunchMonitor = S["LaunchMonitor"];
 export type Shot = S["Shot"];
 export type Reading = S["Reading"];
 export type ImportResult = S["ImportResult"];
+export type Handoff = S["HandoffCreate"];
 export type Characteristic = NonNullable<Questionnaire["characteristics"]>[number];
 
 export type HeadInfo = {
@@ -92,4 +93,10 @@ export const api = {
     call<ImportResult>("/v1/launch-monitor/video", { method: "POST", body: JSON.stringify({ frames }) }),
   readLaunchReport: (url: string) =>
     call<ImportResult>("/v1/launch-monitor/report", { method: "POST", body: JSON.stringify({ url }) }),
+  createHandoff: (h: Handoff) => call<S["HandoffCreated"]>("/v1/handoff", { method: "POST", body: JSON.stringify(h) }),
+  openHandoff: (code: string) => call<Handoff>(`/v1/handoff/${encodeURIComponent(code)}`),
+  postHandoff: (code: string, p: Partial<S["HandoffPost"]>) =>
+    call<{ ok: boolean }>(`/v1/handoff/${encodeURIComponent(code)}`, { method: "POST", body: JSON.stringify(p) }),
+  handoffEvents: (code: string, after: number) =>
+    call<S["HandoffEvents"]>(`/v1/handoff/${encodeURIComponent(code)}/events?after=${after}`),
 };

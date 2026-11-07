@@ -2,7 +2,8 @@
 
 Public:   /health, /v1/model, /v1/catalog, /v1/fits (create, read, add evidence, what-if), /v1/voice/session,
           /v1/launch-monitor/photo, /video and /report (read a session from a photo or video of any launch
-          monitor's screen, or a shared TrackMan link)
+          monitor's screen, or a shared TrackMan link), /v1/handoff (a computer's session hands one camera
+          measurement to the golfer's phone)
 Agent:    /v1/agent/* are server tools for the ElevenLabs voice fitter. Each returns `say`
           (a short spoken answer built from the fit) and `data`; the agent may only rephrase `say`.
 """
@@ -10,6 +11,7 @@ from __future__ import annotations
 
 import logging
 import os
+import secrets
 import time
 from collections import defaultdict, deque
 from typing import Annotated, Literal, Optional
@@ -73,6 +75,37 @@ class ReportImport(BaseModel):
 
 
 IMPORT_STATUS = {"provider": 502, "report_not_found": 404, "report_private": 403}
+HANDOFF_TTL_S = 20 * 60
+
+
+class HandoffCreate(BaseModel):
+    kind: Literal["body", "hand", "swing", "ball_line"]
+    lang: Literal["en", "fi", "sv", "de"] = "en"
+    units: Literal["imperial", "metric"] = "imperial"
+    height_cm: Optional[float] = Field(None, ge=100, le=230)
+
+
+class HandoffCreated(BaseModel):
+    code: str
+    expires_in_s: int
+
+
+class HandoffCue(BaseModel):
+    text: str
+    immediate: bool = False
+
+
+class HandoffPost(BaseModel):
+    cue: Optional[str] = Field(None, max_length=600, description="A live camera coaching line for the fitter")
+    immediate: bool = False
+    evidence: Optional[Evidence] = None
+
+
+class HandoffEvents(BaseModel):
+    opened: bool
+    cues: list[HandoffCue]
+    next: int = Field(description="Pass as ?after= on the next poll")
+    evidence: Optional[Evidence] = None
 
 
 def create_app(model_path: str | None = None, service: FitService | None = None) -> FastAPI:
@@ -187,6 +220,45 @@ def create_app(model_path: str | None = None, service: FitService | None = None)
         if r.status_code != 200:
             raise HTTPException(502, f"voice provider error {r.status_code}")
         return {"signed_url": r.json()["signed_url"], "fit_id": fit_id}
+
+    # A computer's session hands one camera measurement to the golfer's phone. In memory: a code lives for minutes,
+    # and a lost one only means scanning again.
+    handoffs: dict[str, dict] = {}
+
+    def handoff(code: str) -> dict:
+        now = time.time()
+        for k in [k for k, h in handoffs.items() if now - h["created"] > HANDOFF_TTL_S]:
+            del handoffs[k]
+        if code not in handoffs:
+            raise HTTPException(404, {"code": "handoff_expired", "message": "that code has expired"})
+        return handoffs[code]
+
+    @app.post("/v1/handoff", response_model=HandoffCreated)
+    def create_handoff(body: HandoffCreate, request: Request):
+        per_hour(request, "handoff", int(os.environ.get("PF_HANDOFFS_PER_HOUR", "60")))
+        code = secrets.token_urlsafe(12)
+        handoffs[code] = {**body.model_dump(), "created": time.time(), "opened": False, "cues": [], "evidence": None}
+        return HandoffCreated(code=code, expires_in_s=HANDOFF_TTL_S)
+
+    @app.get("/v1/handoff/{code}", response_model=HandoffCreate)
+    def open_handoff(code: str):
+        h = handoff(code)
+        h["opened"] = True
+        return HandoffCreate(**{k: h[k] for k in HandoffCreate.model_fields})
+
+    @app.post("/v1/handoff/{code}")
+    def post_handoff(code: str, body: HandoffPost):
+        h = handoff(code)
+        if body.cue:
+            h["cues"] = (h["cues"] + [{"text": body.cue, "immediate": body.immediate}])[-50:]
+        if body.evidence is not None:
+            h["evidence"] = body.evidence.model_dump(exclude_none=True)
+        return {"ok": True}
+
+    @app.get("/v1/handoff/{code}/events", response_model=HandoffEvents, response_model_exclude_none=True)
+    def handoff_events(code: str, after: int = 0):
+        h = handoff(code)
+        return HandoffEvents(opened=h["opened"], cues=h["cues"][after:], next=len(h["cues"]), evidence=h["evidence"])
 
     def import_error(e: ImportFailed) -> HTTPException:
         log.info("launch-monitor import failed: %s (%s)", e.code, e)

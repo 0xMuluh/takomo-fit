@@ -8,7 +8,7 @@ const SIDE = { left: "links", right: "rechts" };
 const de: Messages = {
   meta: {
     title: "Takomo Fit",
-    pages: { live: "Dein Takomo Fit", guided: "Geführtes Takomo Fit", spec: "Dein Takomo Fit" },
+    pages: { live: "Dein Takomo Fit", guided: "Geführtes Takomo Fit", spec: "Dein Takomo Fit", phone: "Handy-Kamera" },
     description: `Ein komplettes Takomo-Fitting für dein Eisen 7 mit dem Handy, mit ${N}, Takomos KI-Fitter: die `
       + "Spezifikation, die Gründe und wie sicher wir uns sind.",
   },
@@ -119,6 +119,19 @@ const de: Messages = {
     notNow: "Nicht jetzt",
     openFull: "Komplette Auswertung öffnen",
     newTab: `Öffnet sich in einem neuen Tab, damit ${N} in der Leitung bleibt.`,
+  },
+  phone: {
+    here: "Dieser Computer", phone: "Mein Handy",
+    scan: "Mit dem Handy scannen",
+    scanTip: `Öffnet diesen Schritt auf dem Handy. ${N} bleibt hier.`,
+    waiting: "Warte auf dein Handy…",
+    connected: "Handy verbunden. Mach dort weiter.",
+    expired: "Code abgelaufen.", newCode: "Neuer Code",
+    failed: "Kein Code möglich. Nutze die Kamera dieses Computers.",
+    paired: "Mit deinem Computer verbunden",
+    sent: "Gesendet. Zurück zum Computer.",
+    sendFailed: "Senden fehlgeschlagen. Prüfe deine Verbindung.", retry: "Erneut versuchen",
+    gone: "Dieser Link ist abgelaufen. Scanne einen neuen Code am Computer.",
   },
 
   agent: {

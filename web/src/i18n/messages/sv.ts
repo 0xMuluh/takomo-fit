@@ -8,7 +8,7 @@ const SIDE = { left: "vänster", right: "höger" };
 const sv: Messages = {
   meta: {
     title: "Takomo Fit",
-    pages: { live: "Din Takomo Fit", guided: "Guidad Takomo Fit", spec: "Din Takomo Fit" },
+    pages: { live: "Din Takomo Fit", guided: "Guidad Takomo Fit", spec: "Din Takomo Fit", phone: "Mobilkamera" },
     description: `En komplett Takomo-fitting av ditt 7-järn i mobilen med ${N}, Takomos AI-fitter: specen, `
       + "skälen och hur säkra vi är.",
   },
@@ -118,6 +118,19 @@ const sv: Messages = {
     notNow: "Inte nu",
     openFull: "Öppna hela genomgången",
     newTab: `Öppnas i en ny flik så att ${N} är kvar i samtalet.`,
+  },
+  phone: {
+    here: "Den här datorn", phone: "Min mobil",
+    scan: "Skanna med mobilen",
+    scanTip: `Öppnar steget i mobilen. ${N} stannar här.`,
+    waiting: "Väntar på mobilen…",
+    connected: "Mobilen är ansluten. Fortsätt där.",
+    expired: "Koden har gått ut.", newCode: "Ny kod",
+    failed: "Kunde inte skapa en kod. Använd datorns kamera i stället.",
+    paired: "Kopplad till din dator",
+    sent: "Skickat. Tillbaka till datorn.",
+    sendFailed: "Kunde inte skicka. Kontrollera anslutningen.", retry: "Försök igen",
+    gone: "Länken har gått ut. Skanna en ny kod på datorn.",
   },
 
   agent: {

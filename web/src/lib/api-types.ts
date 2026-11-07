@@ -140,6 +140,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/handoff": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Handoff */
+        post: operations["create_handoff_v1_handoff_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/handoff/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Open Handoff */
+        get: operations["open_handoff_v1_handoff__code__get"];
+        put?: never;
+        /** Post Handoff */
+        post: operations["post_handoff_v1_handoff__code__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/handoff/{code}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Handoff Events */
+        get: operations["handoff_events_v1_handoff__code__events_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/launch-monitor/photo": {
         parameters: {
             query?: never;
@@ -470,6 +522,72 @@ export interface components {
             hand_length_cm: number;
             /** Finger Length Cm */
             finger_length_cm?: number | null;
+        };
+        /** HandoffCreate */
+        HandoffCreate: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "body" | "hand" | "swing" | "ball_line";
+            /**
+             * Lang
+             * @default en
+             * @enum {string}
+             */
+            lang: "en" | "fi" | "sv" | "de";
+            /**
+             * Units
+             * @default imperial
+             * @enum {string}
+             */
+            units: "imperial" | "metric";
+            /** Height Cm */
+            height_cm?: number | null;
+        };
+        /** HandoffCreated */
+        HandoffCreated: {
+            /** Code */
+            code: string;
+            /** Expires In S */
+            expires_in_s: number;
+        };
+        /** HandoffCue */
+        HandoffCue: {
+            /** Text */
+            text: string;
+            /**
+             * Immediate
+             * @default false
+             */
+            immediate: boolean;
+        };
+        /** HandoffEvents */
+        HandoffEvents: {
+            /** Opened */
+            opened: boolean;
+            /** Cues */
+            cues: components["schemas"]["HandoffCue"][];
+            /**
+             * Next
+             * @description Pass as ?after= on the next poll
+             */
+            next: number;
+            evidence?: components["schemas"]["Evidence"] | null;
+        };
+        /** HandoffPost */
+        HandoffPost: {
+            /**
+             * Cue
+             * @description A live camera coaching line for the fitter
+             */
+            cue?: string | null;
+            /**
+             * Immediate
+             * @default false
+             */
+            immediate: boolean;
+            evidence?: components["schemas"]["Evidence"] | null;
         };
         /** ImportResult */
         ImportResult: {
@@ -1026,6 +1144,138 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_handoff_v1_handoff_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HandoffCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HandoffCreated"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    open_handoff_v1_handoff__code__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HandoffCreate"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    post_handoff_v1_handoff__code__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HandoffPost"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    handoff_events_v1_handoff__code__events_get: {
+        parameters: {
+            query?: {
+                after?: number;
+            };
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HandoffEvents"];
                 };
             };
             /** @description Validation Error */

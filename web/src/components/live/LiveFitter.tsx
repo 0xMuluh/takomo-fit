@@ -16,12 +16,10 @@ import { fitBrief, KIND_LABEL, type Kind } from "@/lib/fitter/describe";
 import { evidenceKeysOf } from "@/lib/fitter/evidence";
 import { FitterSession } from "@/lib/fitter/session";
 import type { ToolState } from "@/lib/fitter/tools";
-import { BallLineCapture } from "../capture/BallLineCapture";
-import { HandCapture } from "../capture/HandCapture";
 import { LaunchMonitorImport } from "../capture/LaunchMonitorImport";
 import { cx, ExternalIcon, GolferStickman, StickmanLoader } from "../ui";
-import { LiveBody } from "./LiveBody";
-import { LiveSwing } from "./LiveSwing";
+import { CameraCapture } from "./CameraCapture";
+import { PhoneHandoff } from "./PhoneHandoff";
 
 type Line = { role: "fitter" | "you" | "app"; text: string };
 type Attached = { file?: File; url?: string };
@@ -306,7 +304,9 @@ function Session() {
       {measuring && (
         <Sheet title={l.t.live.kind[measuring]} caption={lastFitterLine(lines)} speaking={conv.isSpeaking}
                textMode={textMode} muted={conv.isMuted} onMute={() => conv.setMuted(!conv.isMuted)} onClose={closeMeasurement}>
-          <Measurement kind={measuring} heightCm={answers.q.height_cm ?? 175} onCoach={onCoach} attached={attached}
+          <Measurement key={measuring} kind={measuring} heightCm={answers.q.height_cm ?? 175} onCoach={onCoach} attached={attached}
+                       onPhone={() => conv.sendContextualUpdate(`[app] The golfer opened the ${KIND_LABEL[measuring]} on their phone. `
+                         + "Camera cues from the phone still reach you as [camera] messages; otherwise wait quietly for the [measurement] result.")}
                        onEvidence={(ev) => { setAttached(undefined); void onEvidence(measuring, ev); }} />
         </Sheet>
       )}
@@ -674,23 +674,38 @@ function Sheet({ title, caption, speaking, textMode, muted, onMute, onClose, chi
   );
 }
 
-function Measurement({ kind, heightCm, onCoach, onEvidence, attached }: {
+// Phones and tablets film themselves; a computer's camera can rarely see a golfer head to toe.
+const onComputer = () => !window.matchMedia("(pointer: coarse)").matches;
+
+function Measurement({ kind, heightCm, onCoach, onEvidence, onPhone, attached }: {
   kind: Kind; heightCm: number; onCoach: (cue: string, immediate?: boolean) => void; onEvidence: (ev: Evidence) => void;
-  attached?: Attached;
+  onPhone: () => void; attached?: Attached;
 }) {
-  const light = (c: ReactNode) => <div className="rounded-2xl bg-paper p-4 text-ink">{c}</div>;
-  switch (kind) {
-    case "body":
-      return <LiveBody heightCm={heightCm} onCoach={onCoach} onDone={(b) => onEvidence({ body_photo: b })} />;
-    case "swing":
-      return <LiveSwing onCoach={onCoach} onDone={(s) => onEvidence({ swing_video: s })} />;
-    case "hand":
-      return light(<HandCapture onDone={(h) => onEvidence({ hand_photo: h })} />);
-    case "ball_line":
-      return light(<BallLineCapture onDone={(t) => onEvidence({ ball_line_tilts_deg: t })} />);
-    case "launch_monitor":
-      return light(<LaunchMonitorImport initial={attached} onDone={(lm) => onEvidence({ launch_monitor: lm })} />);
+  const l = useI18n();
+  const [here, setHere] = useState(() => !onComputer());
+  if (kind === "launch_monitor") {
+    return (
+      <div className="rounded-2xl bg-paper p-4 text-ink">
+        <LaunchMonitorImport initial={attached} onDone={(lm) => onEvidence({ launch_monitor: lm })} />
+      </div>
+    );
   }
+  if (!here) {
+    return <PhoneHandoff kind={kind} heightCm={heightCm} onCoach={onCoach} onEvidence={onEvidence}
+                         onOpened={onPhone} onUseHere={() => setHere(true)} />;
+  }
+  return (
+    <div className="space-y-3">
+      {onComputer() && (
+        <button type="button" onClick={() => setHere(false)}
+                className="rounded-full bg-white/[0.07] px-3.5 py-1.5 text-[13px] text-white/80 hover:bg-white/[0.12] hover:text-paper"
+                title={l.t.phone.scanTip}>
+          {l.t.phone.phone}
+        </button>
+      )}
+      <CameraCapture kind={kind} heightCm={heightCm} onCoach={onCoach} onEvidence={onEvidence} />
+    </div>
+  );
 }
 
 function ResultsPreview({ fit }: { fit: FitResponse }) {
