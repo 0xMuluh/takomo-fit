@@ -48,6 +48,34 @@ export function GolferStickman({ className }: { className?: string }) {
   );
 }
 
+export function ChevronIcon({ className }: { className?: string }) {
+  return (
+    <svg aria-hidden viewBox="0 0 12 12" className={cx("size-3 shrink-0", className)}>
+      <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** Orange back arrow. With `href` it goes back in history when it can, so scroll position and state survive. */
+export function BackButton({ label, href, onClick, className }: {
+  label: string; href?: string; onClick?: () => void; className?: string;
+}) {
+  const go = () => {
+    if (onClick) return onClick();
+    if (window.history.length > 1 && document.referrer.startsWith(window.location.origin)) window.history.back();
+    else if (href) window.location.assign(href);
+  };
+  return (
+    <button type="button" onClick={go} aria-label={label} title={label}
+            className={cx("grid size-9 shrink-0 place-items-center rounded-full text-accent transition hover:bg-accent/15", className)}>
+      <svg aria-hidden viewBox="0 0 24 24" className="size-5.5" fill="none" stroke="currentColor" strokeWidth="2.4"
+           strokeLinecap="round" strokeLinejoin="round">
+        <path d="M19 12H5M11.5 5.5 5 12l6.5 6.5" />
+      </svg>
+    </button>
+  );
+}
+
 /** Circular animated stickman loader shown while connecting to Ilmari or waiting for his first line. */
 export function StickmanLoader({ label, size = "md" }: { label?: string; size?: "sm" | "md" }) {
   const sm = size === "sm";

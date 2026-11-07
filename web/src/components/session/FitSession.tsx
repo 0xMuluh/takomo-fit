@@ -156,7 +156,7 @@ export function FitSession() {
 
   return (
     <>
-    <SiteHeader actions={
+    <SiteHeader back="/" actions={
       <>
         <Link href="/fit" className="hidden text-[13px] font-semibold text-fairway hover:underline sm:block">
           {l.t.session.talkInstead}

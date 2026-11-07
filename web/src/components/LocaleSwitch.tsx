@@ -46,8 +46,8 @@ function Flag({ lang }: { lang: Lang }) {
   }
 }
 
-/** Language and units, placed like the country selector in Takomo's store header. */
-export function LocaleSwitch({ tone = "light", label = true }: { tone?: "light" | "dark"; label?: boolean }) {
+/** Language and units behind a flag; the menu spells both out. */
+export function LocaleSwitch({ tone = "light", align = "right" }: { tone?: "light" | "dark"; align?: "left" | "right" }) {
   const { lang, units, t, setLocale } = useI18n();
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
@@ -69,16 +69,16 @@ export function LocaleSwitch({ tone = "light", label = true }: { tone?: "light" 
   return (
     <div ref={root} className="relative">
       <button type="button" onClick={() => setOpen(!open)} aria-expanded={open} aria-haspopup="true"
-              className={cx("flex min-h-8 items-center gap-1.5 text-[12px] font-semibold",
-                            dark ? "text-white/80 hover:text-white" : "text-ink hover:text-ink/70")}>
-        {label && <span className={cx("hidden sm:inline", dark ? "text-white/55" : "text-muted")}>{t.switcher.language}</span>}
+              aria-label={`${t.switcher.language}: ${LANG_NAMES[lang]}, ${unitLabel(units)}`}
+              title={`${LANG_NAMES[lang]} · ${unitLabel(units)}`}
+              className={cx("flex min-h-9 items-center gap-1 rounded-full px-2 transition",
+                            dark ? "text-white/60 hover:bg-white/10 hover:text-white" : "text-ink/60 hover:bg-ink/5 hover:text-ink")}>
         <Flag lang={lang} />
-        <span>{LANG_NAMES[lang]}</span>
-        <span className={dark ? "text-white/55" : "text-muted"}>({unitLabel(units)})</span>
-        <span aria-hidden className="text-[9px]">▼</span>
+        <span aria-hidden className="text-[8px]">▼</span>
       </button>
       {open && (
-        <div className="absolute left-0 top-full z-50 mt-1.5 w-56 rounded-md border border-line bg-white p-1.5 text-ink shadow-lg">
+        <div className={cx("absolute top-full z-50 mt-1.5 w-56 rounded-md border border-line bg-white p-1.5 text-ink shadow-lg",
+                           align === "left" ? "left-0" : "right-0")}>
           <div className="px-2 pb-1 pt-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted">{t.switcher.language}</div>
           {LANGS.map((x) => (
             <button key={x} type="button" onClick={() => { setLocale({ lang: x }); setOpen(false); }}

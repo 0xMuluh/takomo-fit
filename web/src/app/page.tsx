@@ -12,7 +12,7 @@ export default function Home() {
   const h = l.t.home;
   return (
     <div className="flex min-h-dvh flex-col">
-    <SiteHeader />
+    <SiteHeader locale />
     <main className="mx-auto flex w-full max-w-xl flex-1 flex-col px-4 pb-[max(env(safe-area-inset-bottom),2.25rem)] pt-2 sm:px-6 sm:pt-4 lg:max-w-6xl lg:px-10">
       <div className="lg:mt-14 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-16">
         <div>

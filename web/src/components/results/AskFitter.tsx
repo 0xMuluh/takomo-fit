@@ -66,11 +66,12 @@ export function AskFitter({ fit, ctx }: { fit: FitResponse; ctx?: FitContext }) 
           <FitterSays>{x.a}</FitterSays>
         </div>
       ))}
-      <div className="flex flex-wrap gap-2">
+      <div className="grid gap-2 sm:grid-cols-2">
         {questions.filter((x) => !asked.has(x.q)).map((x) => (
           <button key={x.q} type="button" onClick={() => setLog([...log, x])}
-                  className="rounded-full border border-ink/20 bg-white px-3.5 py-2 text-[14px] hover:border-ink">
-            {x.q}
+                  className="flex min-h-11 items-center gap-3 rounded-xl border border-line bg-white px-3.5 py-2.5 text-left text-[14px] font-medium transition hover:border-accent/60 hover:ring-3 hover:ring-accent/12 active:bg-paper">
+            <span className="min-w-0 flex-1">{x.q}</span>
+            <span aria-hidden className="text-accent">›</span>
           </button>
         ))}
       </div>

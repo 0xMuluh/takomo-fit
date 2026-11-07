@@ -8,7 +8,7 @@ import { playChime } from "@/lib/audio";
 import { tempoFromWristY, TempoError } from "@/lib/vision/tempo";
 import { SwingCapture } from "../capture/SwingCapture";
 import { cx } from "../ui";
-import { CameraView, drawSkeleton, Hint, useCamera, usePoseLoop } from "./camera";
+import { CameraView, drawSkeleton, Hint, Tips, useCamera, usePoseLoop } from "./camera";
 
 const SWINGS = 3;
 const RATE = 60;
@@ -57,6 +57,7 @@ function Live({ onDone, onCoach, onUpload }: {
   const [hint, setHint] = useState<string>();
   const [ready, setReady] = useState(false);
   const [results, setResults] = useState<Result[]>([]);
+  const [seen, setSeen] = useState(false);
   const buf = useRef<Sample[]>([]);
   const phase = useRef<"position" | "address" | "swing" | "cooldown">("position");
   const address = useRef(0);
@@ -114,6 +115,7 @@ function Live({ onDone, onCoach, onUpload }: {
 
   const canvas = usePoseLoop(cam, ({ lm, t, ctx, W, H }) => {
     if (finished || !lm) return;
+    if (!seen) setSeen(true);
     const vis = (i: number) => (lm[i].visibility ?? 1) > 0.5;
     const body = [0, 11, 12, 23, 24, 27, 28].every(vis);
     drawSkeleton(ctx, lm, W, H, ready ? "#9fd3b0" : "rgba(255,255,255,0.6)");
@@ -184,17 +186,14 @@ function Live({ onDone, onCoach, onUpload }: {
           })}
         </div>
         <Hint text={hint ?? l.t.liveSwing.start(l.f.room(3))} tone={finished || ready ? "good" : "neutral"} />
-      </CameraView>
-      <div className="flex flex-wrap items-start justify-between gap-3 rounded-2xl bg-white/[0.06] px-4 py-3 text-[13px] text-white/70">
-        <ul className="space-y-1">
-          {l.t.liveSwing.tips.map((tip) => <li key={tip}>• {tip}</li>)}
-        </ul>
+        <Tips tips={l.t.liveSwing.tips} show={!seen && cam.ready} />
         {!finished && (
-          <button type="button" onClick={onUpload} className="shrink-0 rounded-full bg-white/10 px-3.5 py-1.5 font-medium text-white hover:bg-white/20">
+          <button type="button" onClick={onUpload}
+                  className="absolute right-3 top-14 z-10 rounded-full bg-black/60 px-3.5 py-1.5 text-[12px] font-medium text-white backdrop-blur hover:bg-black/75">
             {l.t.liveSwing.upload}
           </button>
         )}
-      </div>
+      </CameraView>
     </div>
   );
 }

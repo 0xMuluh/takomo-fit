@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { useI18n } from "@/i18n/context";
 import { api, type Catalog, type Component, type Evidence, type FitResponse } from "@/lib/api";
@@ -9,7 +9,7 @@ import { certainty, certaintyLabel, diffFits, joinList, partValue, type Change }
 import { headImage, headPage } from "@/lib/products";
 import { loadFitContext, saveFitContext, type FitContext } from "@/lib/session";
 import { Capture, captureForTest, CAPTURES, capturedIn, evidenceKeys, measuredNote, type CaptureKey } from "../capture/captures";
-import { Badge, Button, Card, cx, ErrorNote, ExternalIcon, Meter, Spinner } from "../ui";
+import { Badge, Button, Card, ChevronIcon, cx, ErrorNote, ExternalIcon, Meter, Spinner } from "../ui";
 import { AskFitter } from "./AskFitter";
 import { Compare } from "./Compare";
 import { SaidVsMeasured } from "./SaidVsMeasured";
@@ -25,6 +25,17 @@ export function FitResult({ id }: { id: string }) {
   const [saving, setSaving] = useState(false);
   const [changes, setChanges] = useState<{ title: string; note: string; list: Change[] }>();
   const [copied, setCopied] = useState(false);
+  const buyRef = useRef<HTMLDivElement>(null);
+  const [buyVisible, setBuyVisible] = useState(true);
+  const loaded = !!fit && !capturing;
+
+  useEffect(() => {
+    const el = buyRef.current;
+    if (!loaded || !el) return;
+    const io = new IntersectionObserver(([e]) => setBuyVisible(e.isIntersecting || e.boundingClientRect.top > 0));
+    io.observe(el);
+    return () => io.disconnect();
+  }, [loaded]);
 
   useEffect(() => {
     const loc = { lang: l.lang, units: l.units };
@@ -73,14 +84,13 @@ export function FitResult({ id }: { id: string }) {
 
   if (capturing) {
     return (
-      <Shell>
+      <Shell back={() => setCapturing(undefined)}>
         <h1 className="text-[24px] font-semibold tracking-tight sm:text-[26px]">{l.t.captures.title[capturing]}</h1>
         {saving ? <Spinner label={l.t.session.updating} /> : (
           <Capture k={capturing} heightCm={ctx?.q.height_cm ?? Math.round(fit.estimates.height?.mean ?? 175)}
                    onEvidence={(ev) => void addEvidence(capturing, ev)} />
         )}
         {err && <ErrorNote>{err}</ErrorNote>}
-        <Button variant="ghost" onClick={() => setCapturing(undefined)}>{l.t.result.backToFit}</Button>
       </Shell>
     );
   }
@@ -119,7 +129,7 @@ export function FitResult({ id }: { id: string }) {
       {changes && <ChangeNote {...changes} onClose={() => setChanges(undefined)} />}
 
       <div className="space-y-6 lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start lg:gap-12 lg:space-y-0">
-      <aside className="space-y-4 lg:sticky lg:top-6">
+      <aside className="space-y-4 lg:sticky lg:top-34">
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0 flex-1">
             <div className="text-[12px] font-medium uppercase tracking-wider text-muted">{l.t.result.kicker}</div>
@@ -162,16 +172,8 @@ export function FitResult({ id }: { id: string }) {
             {l.t.result.stockChance(l.f.pct(fit.stock_advice.probability_stock_is_right))}
           </div>
         )}
-        <div className="mt-4 flex flex-wrap gap-2">
-          <a href={storeUrl} target="_blank" rel="noopener noreferrer"
-             className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-[4px] bg-accent px-5 text-center font-display text-[16px] font-bold uppercase tracking-wide text-ink transition hover:bg-accent-strong">
-            <span>{l.t.result.orderOnTakomo(s.head_name)}</span>
-            <ExternalIcon />
-          </a>
-          <button type="button" onClick={copySpecText}
-                  className="inline-flex min-h-12 items-center justify-center rounded-[4px] border border-ink bg-white px-4 font-display text-[15px] font-bold uppercase tracking-wide text-ink transition hover:bg-ink hover:text-paper">
-            {copied ? `✓ ${l.t.result.copiedSpec}` : l.t.result.copySpec}
-          </button>
+        <div ref={buyRef} className="mt-4 flex gap-2">
+          <BuyButtons storeUrl={storeUrl} head={s.head_name} copied={copied} onCopy={copySpecText} />
         </div>
       </Card>
       </aside>
@@ -237,34 +239,42 @@ export function FitResult({ id }: { id: string }) {
       {fit.warnings && fit.warnings.length > 0 && (
         <ul className="list-disc space-y-1 pl-5 text-[13px] text-muted">{fit.warnings.map((w) => <li key={w}>{w}</li>)}</ul>
       )}
-      <footer className="flex items-center justify-between pt-4 text-[12px] text-muted">
-        <span>{l.t.result.footer(fit.fit_id, fit.model_version)}</span>
-        <Link href="/fit" className="underline">{l.t.result.back}</Link>
-      </footer>
       </div>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/95 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-3 backdrop-blur lg:hidden">
+      <div className={cx("fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/95 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-3 backdrop-blur transition-transform duration-200 lg:hidden",
+                         buyVisible && "pointer-events-none translate-y-full")}
+           aria-hidden={buyVisible}>
         <div className="mx-auto flex max-w-xl items-center gap-2">
-          <a href={storeUrl} target="_blank" rel="noopener noreferrer"
-             className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-[4px] bg-accent px-4 text-center font-display text-[15px] font-bold uppercase tracking-wide text-ink transition hover:bg-accent-strong">
-            <span className="truncate">{l.t.result.orderOnTakomo(s.head_name)}</span>
-            <ExternalIcon />
-          </a>
-          <button type="button" onClick={copySpecText}
-                  className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-[4px] border border-ink bg-white px-3.5 font-display text-[14px] font-bold uppercase tracking-wide text-ink transition hover:bg-ink hover:text-paper">
-            {copied ? `✓ ${l.t.result.copiedSpec}` : l.t.result.copySpec}
-          </button>
+          <BuyButtons storeUrl={storeUrl} head={s.head_name} copied={copied} onCopy={copySpecText} />
         </div>
       </div>
     </Shell>
   );
 }
 
-function Shell({ children, wide }: { children: React.ReactNode; wide?: boolean }) {
+function BuyButtons({ storeUrl, head, copied, onCopy }: { storeUrl: string; head: string; copied: boolean; onCopy: () => void }) {
+  const l = useI18n();
   return (
     <>
-      <SiteHeader />
+      <a href={storeUrl} target="_blank" rel="noopener noreferrer" title={l.t.result.orderOnTakomo(head)}
+         className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-[4px] bg-accent px-5 text-center font-display text-[16px] font-bold uppercase tracking-wide text-ink transition hover:bg-accent-strong">
+        <span className="lg:hidden">{l.t.result.buyShort}</span>
+        <span className="hidden lg:inline">{l.t.result.orderOnTakomo(head)}</span>
+        <ExternalIcon />
+      </a>
+      <button type="button" onClick={onCopy}
+              className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-[4px] border border-ink bg-white px-4 font-display text-[15px] font-bold uppercase tracking-wide text-ink transition hover:bg-ink hover:text-paper">
+        {copied ? `✓ ${l.t.result.copiedSpec}` : l.t.result.copySpec}
+      </button>
+    </>
+  );
+}
+
+function Shell({ children, wide, back = "/fit" }: { children: React.ReactNode; wide?: boolean; back?: string | (() => void) }) {
+  return (
+    <>
+      <SiteHeader back={back} />
       <div className={cx("mx-auto max-w-xl space-y-6 px-4 pb-[max(env(safe-area-inset-bottom),6rem)] pt-5 sm:px-6 sm:pt-6 lg:pb-12",
                          wide && "lg:max-w-6xl lg:px-10 lg:pt-8")}>
         {children}
@@ -287,12 +297,15 @@ function PartCard({ c, fit, step, onStep }: { c: Component; fit: FitResponse; st
   const [open, setOpen] = useState(false);
   const ce = certainty(c);
   return (
-    <div className="rounded-2xl border border-line bg-white">
-      <button type="button" className="w-full px-4 py-3.5 text-left sm:px-5 sm:py-4" onClick={() => setOpen(!open)} aria-expanded={open}>
+    <div className={cx("rounded-2xl border bg-white transition hover:border-accent/60 hover:ring-3 hover:ring-accent/12",
+                       open ? "border-accent/60" : "border-line")}>
+      <button type="button" className="w-full cursor-pointer rounded-2xl px-4 py-3.5 text-left active:bg-paper sm:px-5 sm:py-4"
+              onClick={() => setOpen(!open)} aria-expanded={open}>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <div className="w-16 shrink-0 text-[13px] text-muted sm:w-20">{l.t.part[c.part]}</div>
           <div className="min-w-0 flex-1 font-medium leading-snug">{partValue(c.part, c.value, fit, l)}</div>
           <Badge tone={ce.tone}>{certaintyLabel(c, l)}</Badge>
+          <ChevronIcon className={cx("size-3.5 text-accent transition-transform", open && "rotate-180")} />
         </div>
         <div className="mt-2.5 flex items-center gap-3 sm:pl-23">
           <Meter value={c.confidence} tone={ce.tone === "close" ? "close" : "good"} />

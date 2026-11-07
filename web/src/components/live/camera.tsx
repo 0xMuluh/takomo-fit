@@ -131,8 +131,9 @@ export function CameraView({ cam, canvas, highlight, children }: {
   const mirror = cam.facing === "user" ? "-scale-x-100" : "";
   return (
     <div className={cx(
-      "relative mx-auto aspect-[3/4] max-h-[64dvh] w-full overflow-hidden rounded-2xl bg-black transition-shadow duration-300 sm:aspect-video",
-      highlight ? "ring-4 ring-[#9fd3b0] shadow-[0_0_28px_rgba(159,211,176,0.35)]" : "ring-1 ring-white/15",
+      "relative -mx-4 h-[calc(100dvh-8.5rem)] overflow-hidden bg-black ring-inset transition-shadow duration-300",
+      "sm:mx-auto sm:aspect-video sm:h-auto sm:max-h-[72dvh] sm:w-full sm:rounded-2xl",
+      highlight ? "ring-4 ring-[#9fd3b0] shadow-[0_0_28px_rgba(159,211,176,0.35)]" : "sm:ring-1 sm:ring-white/15",
     )}>
       <video ref={cam.video} playsInline muted autoPlay className={cx("absolute inset-0 size-full object-cover", mirror)} />
       <canvas ref={canvas} className={cx("pointer-events-none absolute inset-0 size-full object-cover", mirror)} />
@@ -170,6 +171,16 @@ export function drawSkeleton(ctx: CanvasRenderingContext2D, lm: NormalizedLandma
     ctx.arc(lm[i].x * W, lm[i].y * H, Math.max(4, W / 200), 0, Math.PI * 2);
     ctx.fill();
   }
+}
+
+/** Setup tips over the camera until the golfer is in view. */
+export function Tips({ tips, show }: { tips: string[]; show: boolean }) {
+  if (!show) return null;
+  return (
+    <ul className="absolute inset-x-6 top-1/3 z-10 space-y-1.5 rounded-2xl bg-black/60 px-4 py-3 text-[14px] leading-snug text-white/90 backdrop-blur">
+      {tips.map((tip) => <li key={tip}>{tip}</li>)}
+    </ul>
+  );
 }
 
 export function Hint({ text, progress, tone = "neutral" }: { text: string; progress?: number; tone?: "neutral" | "good" }) {

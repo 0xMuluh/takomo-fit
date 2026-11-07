@@ -8,27 +8,48 @@ import type { BodyPhoto } from "@/lib/api";
 import { playChime } from "@/lib/audio";
 import { measureBody, MeasurementError } from "@/lib/vision/body";
 import { cx } from "../ui";
-import { CameraView, drawSkeleton, Hint, useCamera, usePoseLoop } from "./camera";
+import { CameraView, drawSkeleton, Hint, Tips, useCamera, usePoseLoop } from "./camera";
 
 const SHOTS = 3;
 const MAX_TRIES = 6;
 const STEADY_FRAMES = 14;
+// Landmarks of a golfer 3-4 m away jitter by several pixels a frame, so framing is judged on smoothed points and a
+// problem only counts once it lasts a few frames.
+const SMOOTH = 0.35;
+const BAD_FRAMES = 5;
+const STILL_MS = 700;
+const TRACKED = [0, 15, 16, 27, 28];
 const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)];
 
-function check(lm: NormalizedLandmark[] | undefined, prev: NormalizedLandmark[] | undefined, l: L): string | null {
+type Track = { t: number; pts: { x: number; y: number }[] };
+
+function smooth(prev: NormalizedLandmark[] | undefined, lm: NormalizedLandmark[]): NormalizedLandmark[] {
+  if (!prev) return lm;
+  return lm.map((p, i) => ({
+    ...p,
+    x: prev[i].x + SMOOTH * (p.x - prev[i].x),
+    y: prev[i].y + SMOOTH * (p.y - prev[i].y),
+    visibility: (prev[i].visibility ?? 1) + SMOOTH * ((p.visibility ?? 1) - (prev[i].visibility ?? 1)),
+  }));
+}
+
+function check(lm: NormalizedLandmark[] | undefined, recent: Track[], l: L): string | null {
   if (!lm) return l.t.liveBody.notVisible;
-  const vis = (i: number) => (lm[i].visibility ?? 1) > 0.55;
-  if (![0, 15, 16].every(vis)) return l.t.liveBody.headHands;
-  if (![27, 28, 29, 30].every(vis)) return l.t.liveBody.feet;
-  const foot = Math.max(lm[29].y, lm[30].y, lm[31]?.y ?? 0, lm[32]?.y ?? 0);
+  const vis = (i: number, min = 0.5) => (lm[i].visibility ?? 1) > min;
+  if (![0, 15, 16].every((i) => vis(i))) return l.t.liveBody.headHands;
+  if (!vis(27) || !vis(28) || !(vis(29, 0.4) || vis(31, 0.4)) || !(vis(30, 0.4) || vis(32, 0.4))) return l.t.liveBody.feet;
+  const foot = Math.max(...[27, 28, 29, 30, 31, 32].filter((i) => vis(i, 0.4)).map((i) => lm[i].y));
+  const bodyH = foot - lm[0].y;
   if (lm[0].y < 0.05) return l.t.liveBody.spaceAbove;
   if (foot > 0.99) return l.t.liveBody.feetEdge;
-  if (foot - lm[0].y < 0.44) return l.t.liveBody.closer;
-  if (Math.min(lm[15].y, lm[16].y) < Math.max(lm[23].y, lm[24].y)) return l.t.vision.armsDown;
-  if (prev) {
-    const moved = [0, 15, 16, 27, 28].some((i) => Math.hypot(lm[i].x - prev[i].x, lm[i].y - prev[i].y) > 0.0085);
-    if (moved) return l.t.liveBody.holdStill;
-  }
+  if (bodyH < 0.4) return l.t.liveBody.closer;
+  if (Math.min(lm[15].y, lm[16].y) < (lm[23].y + lm[24].y) / 2 - 0.04 * bodyH) return l.t.vision.armsDown;
+  const moved = TRACKED.some((_, k) => {
+    const xs = recent.map((r) => r.pts[k].x);
+    const ys = recent.map((r) => r.pts[k].y);
+    return Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) > 0.025 * bodyH;
+  });
+  if (moved) return l.t.liveBody.holdStill;
   return null;
 }
 
@@ -43,8 +64,11 @@ export function LiveBody({ heightCm, onDone, onCoach }: {
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState<number>();
   const [captured, setCaptured] = useState(0);
-  const prev = useRef<NormalizedLandmark[]>(undefined);
+  const [seen, setSeen] = useState(false);
+  const smoothed = useRef<NormalizedLandmark[]>(undefined);
+  const recent = useRef<Track[]>([]);
   const steady = useRef(0);
+  const bad = useRef(0);
   const busy = useRef(false);
   const ratios = useRef<{ r: number; good: boolean }[]>([]);
   const tries = useRef(0);
@@ -90,26 +114,34 @@ export function LiveBody({ heightCm, onDone, onCoach }: {
     busy.current = false;
   };
 
-  const canvas = usePoseLoop(cam, ({ lm, t, ctx, W, H }) => {
+  const canvas = usePoseLoop(cam, ({ lm: raw, t, ctx, W, H }) => {
     if (done !== undefined) return;
-    const problem = check(lm, prev.current, l);
-    const enProblem = check(lm, prev.current, agentL(l.units));
-    prev.current = lm;
+    const lm = raw && smooth(smoothed.current, raw);
+    smoothed.current = lm;
+    if (lm && !seen) setSeen(true);
+    if (lm) {
+      recent.current.push({ t, pts: TRACKED.map((i) => ({ x: lm[i].x, y: lm[i].y })) });
+      while (recent.current.length && t - recent.current[0].t > STILL_MS) recent.current.shift();
+    } else recent.current = [];
+    const problem = check(lm, recent.current, l);
+    const enProblem = check(lm, recent.current, agentL(l.units));
     if (lm) drawSkeleton(ctx, lm, W, H, problem ? "rgba(255,255,255,0.6)" : "#9fd3b0");
     if (busy.current) return;
+    if (problem && ++bad.current < BAD_FRAMES) return;
     if (problem) {
-      steady.current = Math.max(0, steady.current - 2);
+      steady.current = 0;
       setHint(problem);
       if (enProblem && enProblem !== "Hold still…") {
         if (lastProblem.current !== enProblem) {
           lastProblem.current = enProblem;
           problemSince.current = t;
-        } else if (t - problemSince.current > 5500) {
+        } else if (t - problemSince.current > 7000) {
           problemSince.current = t;
           onCoach?.(`[camera] The golfer is positioning for the full-body photo, but: ${enProblem} Tell them in one short sentence how to adjust.`);
         }
       }
     } else {
+      bad.current = 0;
       lastProblem.current = undefined;
       steady.current++;
       if (steady.current === 1) setHint(l.t.liveBody.perfect);
@@ -140,12 +172,8 @@ export function LiveBody({ heightCm, onDone, onCoach }: {
         ) : (
           <Hint text={hint ?? l.t.liveBody.start} progress={progress} tone={progress > 0 ? "good" : "neutral"} />
         )}
+        <Tips tips={l.t.liveBody.tips(l.f.room(3, 4))} show={!seen && cam.ready} />
       </CameraView>
-      <div className="rounded-2xl bg-white/[0.06] px-4 py-3 text-[13px] text-white/70">
-        <ul className="space-y-1">
-          {l.t.liveBody.tips(l.f.room(3, 4)).map((tip) => <li key={tip}>• {tip}</li>)}
-        </ul>
-      </div>
     </div>
   );
 }

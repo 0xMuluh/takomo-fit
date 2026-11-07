@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ConversationProvider, useConversation } from "@elevenlabs/react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { LocaleSwitch } from "@/components/LocaleSwitch";
 import { SiteHeader } from "@/components/SiteHeader";
 import { TakomoLogo } from "@/components/TakomoLogo";
 import { agentL, type Locale } from "@/i18n";
@@ -17,7 +16,7 @@ import { evidenceKeysOf } from "@/lib/fitter/evidence";
 import { FitterSession } from "@/lib/fitter/session";
 import type { ToolState } from "@/lib/fitter/tools";
 import { LaunchMonitorImport } from "../capture/LaunchMonitorImport";
-import { cx, ExternalIcon, GolferStickman, StickmanLoader } from "../ui";
+import { BackButton, ChevronIcon, cx, ExternalIcon, GolferStickman, StickmanLoader } from "../ui";
 import { CameraCapture } from "./CameraCapture";
 import { PhoneHandoff } from "./PhoneHandoff";
 
@@ -117,7 +116,7 @@ function Session() {
     }
     if (conv.isSpeaking) return;
     if (now - measureOpenedAt.current < 7500) return;
-    if (now - lastCueAt.current < 9000 || cue === lastCueText.current) return;
+    if (now - lastCueAt.current < 15000 || cue === lastCueText.current) return;
     lastCueAt.current = now;
     lastCueText.current = cue;
     send(cue);
@@ -247,16 +246,9 @@ function Session() {
             </span>
           </div>
           <div className="hidden sm:block">
-            <SpecPill fit={fit} answers={answers} changed={changed} />
+            <SpecPill fit={fit} answers={answers} changed={changed} onOpen={() => setResultsOpen(true)} />
           </div>
           <div className="flex flex-1 items-center justify-end gap-1.5">
-            <LocaleSwitch tone="dark" label={false} />
-            {fit && (
-              <HeaderButton tone="accent" onClick={() => setResultsOpen(true)}>
-                <SpecIcon />
-                <span>{l.t.live.results}</span>
-              </HeaderButton>
-            )}
             {phase === "live" && (
               <HeaderButton tone="subtle" onClick={end}>
                 <EndIcon />
@@ -266,7 +258,7 @@ function Session() {
           </div>
         </div>
         <div className="mt-2 flex justify-center sm:hidden">
-          <SpecPill fit={fit} answers={answers} changed={changed} />
+          <SpecPill fit={fit} answers={answers} changed={changed} onOpen={() => setResultsOpen(true)} />
         </div>
       </header>
 
@@ -346,15 +338,6 @@ function HeaderButton({ onClick, tone = "default", children }: {
   );
 }
 
-function SpecIcon() {
-  return (
-    <svg aria-hidden viewBox="0 0 16 16" className="size-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2.5" y="2" width="11" height="12" rx="2" />
-      <path d="M5.5 5.5h5M5.5 8h5M5.5 10.5h3" />
-    </svg>
-  );
-}
-
 function EndIcon() {
   return (
     <svg aria-hidden viewBox="0 0 16 16" className="size-3 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
@@ -371,7 +354,7 @@ function Intro({ phase, saved, unavailable, err, onStart }: {
   const busy = phase === "connecting";
   return (
     <div className="flex min-h-dvh flex-col bg-ink text-paper">
-    <SiteHeader tone="dark" />
+    <SiteHeader tone="dark" back="/" />
     <main className="mx-auto flex w-full max-w-xl flex-1 flex-col px-4 pb-[max(env(safe-area-inset-bottom),2rem)] pt-2 sm:px-6 sm:pt-6">
       <h1 className="mt-6 text-[38px] italic leading-none sm:mt-8 sm:text-[48px]">{intro.title}</h1>
       <p className="mt-3.5 text-[16px] leading-relaxed text-white/75 sm:text-[17px]">{intro.body}</p>
@@ -435,7 +418,9 @@ function Intro({ phase, saved, unavailable, err, onStart }: {
 
 const TONE = { good: "text-paper/90", neutral: "text-white/55", close: "text-accent" };
 
-function SpecPill({ fit, answers, changed }: { fit?: FitResponse; answers: Answers; changed: Set<string> }) {
+function SpecPill({ fit, answers, changed, onOpen }: {
+  fit?: FitResponse; answers: Answers; changed: Set<string>; onOpen: () => void;
+}) {
   const l = useI18n();
   const [open, setOpen] = useState(false);
   const comps = fit ? PARTS.map((p) => fit.components.find((c) => c.part === p)!).filter(Boolean) : [];
@@ -459,9 +444,7 @@ function SpecPill({ fit, answers, changed }: { fit?: FitResponse; answers: Answe
                             fit && confirmed === PARTS.length ? "bg-[#132a1c] text-[#9fd3b0]" : "bg-white/10 text-white/75")}>
           {progressBadge}
         </span>
-        <svg aria-hidden viewBox="0 0 12 12" className={cx("size-3 shrink-0 text-white/50 transition", open && "rotate-180")}>
-          <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
+        <ChevronIcon className={cx("text-accent transition", open && "rotate-180")} />
       </button>
       {open && (
         <>
@@ -488,6 +471,13 @@ function SpecPill({ fit, answers, changed }: { fit?: FitResponse; answers: Answe
                 </div>
                 {need.length > 0 && <p className="text-[13px]">{l.t.live.hud.stillNeeds(need.join(", "))}</p>}
               </div>
+            )}
+            {fit && (
+              <button type="button" onClick={() => { setOpen(false); onOpen(); }}
+                      className="mt-1 flex w-full items-center justify-between rounded-2xl px-3 py-2.5 text-[14px] font-semibold text-accent hover:bg-accent/10">
+                <span>{l.t.live.seeFull}</span>
+                <span aria-hidden>›</span>
+              </button>
             )}
           </div>
         </>
@@ -643,18 +633,17 @@ function Sheet({ title, caption, speaking, textMode, muted, onMute, onClose, chi
     <div className="fixed inset-0 z-30 flex flex-col bg-ink text-paper" role="dialog" aria-label={title}>
       <div className="px-4 pb-2 pt-[max(env(safe-area-inset-top),0.75rem)] sm:px-6 lg:px-10">
         <div className="flex items-center justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-3">
-            <TakomoLogo tone="dark" />
+          <div className="flex min-w-0 items-center gap-2">
+            <BackButton label={l.t.common.back} onClick={onClose} className="-ml-2" />
             <h2 className="truncate text-[17px] sm:text-[19px]">{title}</h2>
           </div>
           <div className="flex shrink-0 items-center gap-1.5 text-[13px]">
             {!textMode && (
               <HeaderButton tone={muted ? "subtle" : "accent"} onClick={onMute}>
                 <MicIcon off={muted} />
-                <span>{muted ? l.t.live.unmute : l.t.live.mute}</span>
+                <span className="hidden sm:inline">{muted ? l.t.live.unmute : l.t.live.mute}</span>
               </HeaderButton>
             )}
-            <HeaderButton tone="subtle" onClick={onClose}>{l.t.live.notNow}</HeaderButton>
           </div>
         </div>
       </div>

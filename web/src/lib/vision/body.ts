@@ -17,7 +17,8 @@ const L = {
   leftHip: 23, rightHip: 24, leftAnkle: 27, rightAnkle: 28, leftHeel: 29, rightHeel: 30, leftToe: 31, rightToe: 32,
 };
 const REQUIRED = [L.nose, L.leftShoulder, L.rightShoulder, L.leftWrist, L.rightWrist, L.leftHip, L.rightHip,
-  L.leftAnkle, L.rightAnkle, L.leftHeel, L.rightHeel];
+  L.leftAnkle, L.rightAnkle];
+const FEET = [[L.leftHeel, L.leftToe], [L.rightHeel, L.rightToe]];
 
 const deg = (dx: number, dy: number) => (Math.atan2(dy, dx) * 180) / Math.PI;
 
@@ -35,8 +36,8 @@ export async function measureBody(
   const res = pose.detect(img);
   const lm = res.landmarks[0];
   if (!lm) throw new MeasurementError(v.noPerson);
-  const missing = REQUIRED.filter((i) => (lm[i].visibility ?? 1) < 0.5);
-  if (missing.length) {
+  const seen = (i: number) => (lm[i].visibility ?? 1) >= 0.5;
+  if (!REQUIRED.every(seen) || !FEET.every((f) => f.some(seen))) {
     throw new MeasurementError(v.hidden);
   }
   const px = (i: number): Point => ({ x: lm[i].x * W, y: lm[i].y * H });
@@ -84,7 +85,7 @@ export async function measureBody(
     topY = Math.max(0, px(L.nose).y - Math.max(earSpan * 1.15, 0.06 * H));
   }
 
-  const lowestLandmark = Math.max(...[L.leftHeel, L.rightHeel, L.leftToe, L.rightToe].map((i) => px(i).y));
+  const lowestLandmark = Math.max(...FEET.flat().filter(seen).map((i) => px(i).y));
   const floorY = Number.isFinite(maskFloor) ? Math.max(maskFloor, lowestLandmark) : lowestLandmark;
   const wrist = mid(px(L.leftWrist), px(L.rightWrist));
   const hips = mid(px(L.leftHip), px(L.rightHip));
