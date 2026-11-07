@@ -108,6 +108,8 @@ const fi: Messages = {
       yourSpec: "Suosituksesi",
       buildsHere: "Rakentuu tähän keskustelun aikana.",
       stillNeeds: (list) => `${N} tarvitsee vielä: ${list}.`,
+      answersProgress: (n) => `${n}/7 vastausta`,
+      confirmedProgress: (n, total) => `${n}/${total} varmistettu`,
     },
     joining: `${N} liittyy…`,
     micOff: "Mikrofoni pois",
@@ -116,7 +118,6 @@ const fi: Messages = {
     mute: "Mykistä", unmute: "Poista mykistys",
     typeAnswer: "Kirjoita vastauksesi…", orType: "Tai kirjoita tähän…", messageLabel: `Viesti ${N}lle`,
     openFull: "Avaa koko erittely",
-    newTab: `Avautuu uuteen välilehteen, joten ${N} pysyy linjalla.`,
   },
   phone: {
     here: "Käytä tätä tietokonetta", phone: "Käytä puhelinta",
@@ -133,7 +134,7 @@ const fi: Messages = {
   },
 
   agent: {
-    hello: `Moi, olen ${N}, Takomon tekoälysovittaja. Tämä vie noin 5 minuuttia kolmessa vaiheessa: 7 nopeaa kysymystä `
+    hello: `Moi, olen ${N}, Takomon tekoälysovittaja. Tämä vie noin 3–6 minuuttia kolmessa vaiheessa: 7 nopeaa kysymystä `
       + "pelistäsi, välitön ensiarvio speksistäsi ja valinnaiset mittaukset puhelimen kameralla. Mikä on etunimesi ja "
       + "mitä haet uusilta raudoilta?",
     welcomeBack: (name) => `Tervetuloa takaisin${name ? `, ${name}` : ""}. Täällä taas ${N}. Jatketaan siitä, mihin jäimme.`,
@@ -569,6 +570,8 @@ const fi: Messages = {
     show: "Näytä", running: "Lasketaan sovitusta uudelleen", failed: "Se ei onnistunut. Yritä uudelleen.",
     same: "Suosituksesi pysyisi samana.",
     now: (v) => `(nyt ${v})`,
+    saidSpeed: (said, used) => `Sanoit ${said}; sovitus käyttää arvoa ${used}.`,
+    saidCarry: (said, used) => `Ilmoittamastasi ${said} lentomatkasta sovitus käyttää nopeutta ${used}.`,
   },
 
   ask: {

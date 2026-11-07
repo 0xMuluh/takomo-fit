@@ -109,6 +109,8 @@ const de: Messages = {
       yourSpec: "Deine Spezifikation",
       buildsHere: "Entsteht hier, während ihr sprecht.",
       stillNeeds: (list) => `${N} braucht noch: ${list}.`,
+      answersProgress: (n) => `${n}/7 Antworten`,
+      confirmedProgress: (n, total) => `${n}/${total} bestätigt`,
     },
     joining: `${N} kommt dazu…`,
     micOff: "Mikrofon aus",
@@ -117,7 +119,6 @@ const de: Messages = {
     mute: "Stumm", unmute: "Ton an",
     typeAnswer: "Schreib deine Antwort…", orType: "Oder hier schreiben…", messageLabel: `Nachricht an ${N}`,
     openFull: "Komplette Auswertung öffnen",
-    newTab: `Öffnet sich in einem neuen Tab, damit ${N} in der Leitung bleibt.`,
   },
   phone: {
     here: "Diesen Computer nutzen", phone: "Handy nutzen",
@@ -134,7 +135,7 @@ const de: Messages = {
   },
 
   agent: {
-    hello: `Hi, ich bin ${N}, Takomos KI-Fitter. Das dauert etwa 5 Minuten in drei Schritten: 7 kurze Fragen zu deinem `
+    hello: `Hi, ich bin ${N}, Takomos KI-Fitter. Das dauert etwa 3–6 Minuten in drei Schritten: 7 kurze Fragen zu deinem `
       + "Spiel, eine direkte Ersteinschätzung deiner Spezifikation und optionale Kamera-Messungen zur Feinabstimmung. "
       + "Wie ist dein Vorname und was wünschst du dir von neuen Eisen?",
     welcomeBack: (name) => `Willkommen zurück${name ? `, ${name}` : ""}. Hier ist wieder ${N}. Machen wir da weiter, wo wir aufgehört haben.`,
@@ -573,6 +574,8 @@ const de: Messages = {
     show: "Zeig es mir", running: "Dein Fitting wird neu berechnet", failed: "Das hat nicht geklappt. Bitte versuch es noch einmal.",
     same: "Deine Spezifikation bliebe gleich.",
     now: (v) => `(jetzt ${v})`,
+    saidSpeed: (said, used) => `Du sagtest ${said}; das Fitting nutzt ${used}.`,
+    saidCarry: (said, used) => `Aus deinen ${said} Carry nutzt das Fitting ${used}.`,
   },
 
   ask: {

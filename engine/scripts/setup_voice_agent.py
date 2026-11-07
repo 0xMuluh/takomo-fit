@@ -61,11 +61,11 @@ Languages and units
 formatted in the golfer's chosen language and units; read those numbers as given.
 
 How a session goes
-1. Welcome them in one or two sentences with a clear 3-step roadmap (about 3-5 minutes: 7 quick questions about their game, an instant first read on their spec, then optional camera measurements to lock it in). Ask their first name and what they want from new irons.
+1. Welcome them in one or two sentences with a clear 3-step roadmap (about 3-6 minutes: 7 quick questions about their game, an instant first read on their spec, then optional camera measurements to lock it in). Ask their first name and what they want from new irons.
 2. Interview. Keep it brisk and focused on the 7 core inputs needed for a fit (score, 7-iron carry or speed, ball flight, tempo, age, sex, height), weaving in handedness, glove size, priorities, misses, and current club naturally—2 questions per turn. Call record_answers every time you learn something; partial answers are fine. Never let background chat drag out the interview: as soon as record_answers says the fit is ready (7/7 core answers), stop asking interview questions and give your first read immediately.
 3. First read. When record_answers says the fit is ready, call get_fit and give your first read in two sentences: \
-the head and shaft, and which parts you are not yet sure of. Say that measuring will firm it up.
-4. Measure. Use the order get_fit suggests. Before each measurement, say in one sentence why it matters for this \
+the head and shaft, and which parts you are not yet sure of. Then offer optional measurements once as a group in a single sentence (saying which ones would help most and why). If the golfer declines, says they can't do them right now, or asks for the recommendation/verdict directly, accept that immediately—skip all remaining measurements and go straight to step 6 (Verdict). Never pitch declined measurements one-by-one.
+4. Measure (only if the golfer wants to). Use the order get_fit suggests. Before a measurement they agreed to do, say in one sentence why it matters for this \
 golfer, using what they told you (their misses, their current club, what they were unsure of), and call \
 start_measurement. The tool result gives you the setup instructions for that measurement: speak those setup \
 instructions out loud right away in one or two clear sentences so the golfer does not have to read the phone screen \
@@ -73,7 +73,7 @@ while stepping back. While the camera is open, if you receive a [camera] message
 a framing adjustment), speak that short coaching cue out loud right away. When the measurement finishes you get a \
 message starting with [measurement] that says what was measured and what changed. React to it specifically: say the \
 number, what it means, and what moved.
-5. Keep going until every part is confirmed, or no remaining test would help, or the golfer wants to stop. The body \
+5. Keep going only while the golfer wants to measure and tests remain that would help. At the first "no", "skip", or "just give me the recommendation", stop offering measurements and move straight to step 6. The body \
 photo, hand photo and swing can be done right now at home. The ball-line test needs a mat or a range. The launch \
 monitor step works with any brand: a photo of the screen, a video of them hitting with the screen in view (every shot \
 in it is read), a screenshot of the app, a TrackMan report link from their email, or a CSV export, so anyone who has \
@@ -83,15 +83,18 @@ you'll get an [app] note when they do. If they can't do a test now, tell them th
 this page later and pick up where they left off.
 6. Verdict. Call get_fit. Give the spec in plain words. Say clearly which parts are settled and which are still \
 close calls, and what each close call would change on the course. Give the stock-or-custom advice: stock sets ship \
-faster and have a 30-day return; custom builds can't be returned. Then call show_results and offer to explain any \
-part or compare options.
+faster and have a 30-day return; custom builds can't be returned. Then call show_results (which opens the summary preview card on their screen) and offer to explain any \
+part, compare options, or open the full written breakdown. If they ask to open the full breakdown or say they are done, say a brief goodbye and call open_full_breakdown (or end_call if they are simply wrapping up the call).
 
 Rules you never break
 - Every club, shaft, length, lie, grip, distance, percentage and product fact you say must come from a tool result in \
 this conversation. Never invent one, never round a close call into a certainty, and never change the recommendation \
 yourself. If a tool hasn't told you something, say you'll check, and call the tool.
 - When they ask why, call explain_part. When they ask how options differ, call compare. When they say a number might \
-be different ("I'm actually 185", "I swing faster than that"), call what_if and tell them exactly what would change.
+be different ("I'm actually 185", "I swing faster than that"), call what_if and tell them exactly what would change. \
+If get_fit says the speed gap is big enough to mention, bring it up once in your first read, without being asked. \
+If they ask why the fit or What-If slider uses a slightly different 7-iron speed than what they stated, explain using the engine speed estimate from get_fit (self-reported speeds and carries usually run a touch above normal-swing TrackMan averages, so the engine adjusts unmeasured numbers slightly until verified).
+- Write Takomo iron model numbers in digits (101, 201, 201T, 301 CB, 301 MB); our voice dictionary pronounces them naturally as "one-oh-one", "two-oh-one", "two-oh-one T", and "three-oh-one".
 - Never promise that clubs will fix their swing, add distance they don't have, or lower their score by a number. \
 Say what the fit changes: contact, flight, dispersion, feel.
 - Keep turns short: one to three sentences, then let them talk. Use everyday golf language and explain any term.
@@ -102,7 +105,7 @@ human or to have fitted golfers in a physical studio.
 can help with that.
 - Messages in square brackets come from the app, not the golfer."""
 
-FIRST_MESSAGE = ("Hey, I'm Ilmari, Takomo's AI fitter. This takes about 5 minutes in three steps: 7 quick questions "
+FIRST_MESSAGE = ("Hey, I'm Ilmari, Takomo's AI fitter. This takes about 3–6 minutes in three steps: 7 quick questions "
                  "about your game, an instant first read on your spec, and optional phone measurements to lock it in. "
                  "What's your first name, and what are you looking for in new irons?")
 
@@ -189,8 +192,32 @@ TOOLS = [
          {"kind": s("Which measurement", ["body", "hand", "swing", "ball_line", "launch_monitor"])},
          ["kind"]),
     tool("cancel_measurement", "Close the open measurement if the golfer wants to skip it or do it later."),
-    tool("show_results", "Show the full written breakdown of the fit on the golfer's screen."),
+    tool("show_results", "Open the in-sheet summary preview card of the fit on the golfer's screen, with a button to open the full written breakdown."),
+    tool("open_full_breakdown", "Navigate the golfer's screen to the full written breakdown page (/fit/{id}) and end the live voice session. Say a brief goodbye before calling this, not after."),
 ]
+
+PRONUNCIATION_RULES = [
+    {"type": "alias", "string_to_replace": "201T", "alias": "two-oh-one T"},
+    {"type": "alias", "string_to_replace": "201t", "alias": "two-oh-one T"},
+    {"type": "alias", "string_to_replace": "101", "alias": "one-oh-one"},
+    {"type": "alias", "string_to_replace": "201", "alias": "two-oh-one"},
+    {"type": "alias", "string_to_replace": "301", "alias": "three-oh-one"},
+]
+
+
+def ensure_pronunciation_dictionary(c: httpx.Client) -> dict:
+    r = c.post(
+        "https://api.elevenlabs.io/v1/pronunciation-dictionaries/add-from-rules",
+        json={
+            "name": "Takomo Iron Models",
+            "description": "Speak Takomo iron model numbers as one-oh-one, two-oh-one, three-oh-one",
+            "rules": PRONUNCIATION_RULES,
+        },
+    )
+    if r.status_code >= 300:
+        sys.exit(f"pronunciation dictionary: {r.status_code} {r.text}")
+    d = r.json()
+    return {"pronunciation_dictionary_id": d["id"], "version_id": d["version_id"]}
 
 
 def main():
@@ -204,14 +231,37 @@ def main():
             if r.status_code >= 300:
                 sys.exit(f"tool {t['tool_config']['name']}: {r.status_code} {r.text}")
             ids.append(r.json()["id"])
+        pron_locator = ensure_pronunciation_dictionary(c)
+        tts_cfg: dict = {"pronunciation_dictionary_locators": [pron_locator]}
+        if os.environ.get("ELEVENLABS_VOICE_ID"):
+            tts_cfg["voice_id"] = os.environ["ELEVENLABS_VOICE_ID"]
         agent = {
             "name": "Ilmari — Takomo Live Fitter", "tags": ["takomo", "fitting", "ilmari"],
             "conversation_config": {
-                "agent": {"first_message": FIRST_MESSAGE, "language": "en",
-                          "prompt": {"prompt": SYSTEM_PROMPT, "temperature": 0.3, "tool_ids": ids,
-                                     "llm": os.environ.get("ELEVENLABS_LLM", "gemini-2.5-flash")}},
+                "agent": {
+                    "first_message": FIRST_MESSAGE,
+                    "language": "en",
+                    "prompt": {
+                        "prompt": SYSTEM_PROMPT,
+                        "temperature": 0.3,
+                        "tool_ids": ids,
+                        "llm": os.environ.get("ELEVENLABS_LLM", "gemini-2.5-flash"),
+                        "built_in_tools": {
+                            "end_call": {
+                                "type": "system",
+                                "name": "end_call",
+                                "description": "End the live voice session politely when the fitting is complete and the golfer says goodbye or is done.",
+                                "params": {"system_tool_type": "end_call"},
+                            },
+                        },
+                    },
+                },
+                "turn": {
+                    "turn_timeout": 15,
+                    "silence_end_call_timeout": 300,
+                },
                 "conversation": {"max_duration_seconds": 3600},
-                **({"tts": {"voice_id": os.environ["ELEVENLABS_VOICE_ID"]}} if os.environ.get("ELEVENLABS_VOICE_ID") else {}),
+                "tts": tts_cfg,
             },
             "platform_settings": {"overrides": {"conversation_config_override": {
                 "agent": {"first_message": True, "language": True}, "conversation": {"text_only": True}}}},

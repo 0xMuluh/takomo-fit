@@ -33,7 +33,7 @@ function Voice({ fit, ctx }: { fit: FitResponse; ctx?: FitContext }) {
   locRef.current = { lang: l.lang, units: l.units };
   const lRef = useRef(l);
   lRef.current = l;
-  const brief = fitBrief(fit, evidenceKeysOf({}, fit), l);
+  const brief = fitBrief(fit, evidenceKeysOf({}, fit), l, ctx ? { q: ctx.q, x: ctx.x } : undefined);
   const sentBrief = useRef<string>(undefined);
 
   const conv = useConversation({

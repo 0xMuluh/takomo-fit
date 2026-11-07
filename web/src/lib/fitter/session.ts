@@ -17,6 +17,7 @@ export type SessionEvents = {
   onChanges?: (c: Change[]) => void;
   onMeasure?: (k: Kind | undefined) => void;
   onResults?: () => void;
+  onOpenBreakdown?: () => void;
 };
 
 /** One golfer's live fitting: what they said, what was measured, and the engine's current fit. */
@@ -69,7 +70,7 @@ export class FitterSession {
       const had = !!this.s.fit;
       const { fit, changes } = await this.refit();
       if (fit && !had) {
-        out.push(`Fit ready (7/7 core answers complete). Stop asking interview questions and give your first read now, then offer the first measurement:\n${fitBrief(fit, this.done(), this.al)}`);
+        out.push(`Fit ready (7/7 core answers complete). Stop asking interview questions and give your first read now, then offer optional measurements once as a group (if they decline or ask for the recommendation directly, skip all measurements and give the verdict):\n${fitBrief(fit, this.done(), this.al, next)}`);
       } else if (fit) {
         out.push(`Fit updated. ${changesText(changes, fit, this.al)}`);
       }
@@ -114,7 +115,7 @@ export class FitterSession {
           + "sentence, then carry on with the interview.",
       };
     }
-    if (!had) return { note, message: what + `Fit ready. Give your first read:\n${fitBrief(fit, this.done(), this.al)}` };
+    if (!had) return { note, message: what + `Fit ready. Give your first read:\n${fitBrief(fit, this.done(), this.al, this.s.answers)}` };
     const next = suggestedKinds(fit, this.done())[0];
     return {
       note,
@@ -144,7 +145,12 @@ export class FitterSession {
       },
       showResults: () => {
         this.ev.onResults?.();
-        return "The full breakdown is on their screen, with a button to open every detail.";
+        return "The summary preview card is on their screen, with a button to open the full breakdown.";
+      },
+      openFullBreakdown: () => {
+        if (!this.s.fit) return "No fit yet.";
+        this.ev.onOpenBreakdown?.();
+        return "Opening the full written breakdown and ending the live session. You've already said goodbye, so say nothing more.";
       },
     });
   }

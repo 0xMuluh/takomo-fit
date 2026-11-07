@@ -108,6 +108,8 @@ const sv: Messages = {
       yourSpec: "Din spec",
       buildsHere: "Växer fram här medan ni pratar.",
       stillNeeds: (list) => `${N} behöver fortfarande: ${list}.`,
+      answersProgress: (n) => `${n}/7 svar`,
+      confirmedProgress: (n, total) => `${n}/${total} bekräftade`,
     },
     joining: `${N} ansluter…`,
     micOff: "Mikrofonen av",
@@ -116,7 +118,6 @@ const sv: Messages = {
     mute: "Stäng av ljud", unmute: "Slå på ljud",
     typeAnswer: "Skriv ditt svar…", orType: "Eller skriv här…", messageLabel: `Meddelande till ${N}`,
     openFull: "Öppna hela genomgången",
-    newTab: `Öppnas i en ny flik så att ${N} är kvar i samtalet.`,
   },
   phone: {
     here: "Använd den här datorn", phone: "Använd mobilen",
@@ -133,7 +134,7 @@ const sv: Messages = {
   },
 
   agent: {
-    hello: `Hej, jag är ${N}, Takomos AI-fitter. Det här tar ungefär 5 minuter i tre steg: 7 snabba frågor om ditt `
+    hello: `Hej, jag är ${N}, Takomos AI-fitter. Det här tar ungefär 3–6 minuter i tre steg: 7 snabba frågor om ditt `
       + "spel, en direkt första bedömning av din spec och valfria kameramätningar för att låsa den. Vad heter du i "
       + "förnamn och vad söker du i nya järn?",
     welcomeBack: (name) => `Välkommen tillbaka${name ? `, ${name}` : ""}. ${N} här igen. Vi fortsätter där vi slutade.`,
@@ -568,6 +569,8 @@ const sv: Messages = {
     show: "Visa mig", running: "Räknar om din fitting", failed: "Det fungerade inte. Försök igen.",
     same: "Din spec skulle vara oförändrad.",
     now: (v) => `(nu ${v})`,
+    saidSpeed: (said, used) => `Du sa ${said}; fittingen använder ${used}.`,
+    saidCarry: (said, used) => `Från din carry på ${said} använder fittingen ${used}.`,
   },
 
   ask: {

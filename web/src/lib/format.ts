@@ -42,8 +42,8 @@ export type Certainty = { key: "confirmed" | "likely" | "check"; tone: "good" | 
 
 /** On dev golfers, parts called at >=95% were right 98.8-99.7% of the time; at 80-95%, 83-91%. */
 export function certainty(c: Component): Certainty {
+  if (c.confidence >= 0.95) return c.close_call ? { key: "likely", tone: "neutral" } : { key: "confirmed", tone: "good" };
   if (c.close_call || c.confidence < 0.8) return { key: "check", tone: "close" };
-  if (c.confidence >= 0.95) return { key: "confirmed", tone: "good" };
   return { key: "likely", tone: "neutral" };
 }
 
@@ -56,8 +56,8 @@ export const joinList = (xs: string[], l: L) =>
 export function certaintySummary(fit: FitResponse, l: L): string {
   const parts = fit.components.filter((c) => c.part !== "purchase");
   const name = (c: Component) => l.lower(l.t.part[c.part]);
-  const settled = parts.filter((c) => !c.close_call && c.confidence >= 0.8).map(name);
-  const close = parts.filter((c) => c.close_call || c.confidence < 0.8).map((c) =>
+  const settled = parts.filter((c) => certainty(c).key !== "check").map(name);
+  const close = parts.filter((c) => certainty(c).key === "check").map((c) =>
     c.alternative
       ? `${name(c)} (${l.t.common.or(partValue(c.part, c.value, fit, l), partValue(c.part, c.alternative, fit, l))})`
       : name(c));

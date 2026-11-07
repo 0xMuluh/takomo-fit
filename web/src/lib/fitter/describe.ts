@@ -44,16 +44,27 @@ function partLine(c: Component, fit: FitResponse, l: L): string {
 }
 
 /** Everything the fitter needs to talk about the fit, as plain text. `l` is English with the golfer's units. */
-export function fitBrief(fit: FitResponse, done: Set<CaptureKey>, l: L): string {
+export function fitBrief(fit: FitResponse, done: Set<CaptureKey>, l: L, a?: Answers): string {
   const { f } = l;
   const comps = PARTS.map((p) => fit.components.find((c) => c.part === p)!).filter(Boolean);
   const unsettled = comps.filter((c) => c.close_call || c.confidence < 0.95);
   const next = suggestedKinds(fit, done);
   const gains = new Map(fit.next_tests.map((t) => [TEST_KIND[t.test], t]));
+  const speed = fit.estimates.speed;
+  const statedSpeed = a?.q.speed_mph != null ? f.speed(a.q.speed_mph)
+    : a?.q.carry_yd != null ? `${f.dist(a.q.carry_yd)} carry` : undefined;
+  const speedGap = speed && a?.q.speed_mph != null && Math.abs(speed.mean - a.q.speed_mph) >= 3;
   const lines = [
     `Spec: ${fit.spec.head_name}; ${partValue("shaft", fit.spec.shaft.slug, fit, l)} shaft; length `
       + `${partValue("length", String(fit.spec.length_in), fit, l)}; lie ${partValue("lie", String(fit.spec.lie_deg), fit, l)}; `
       + `${partValue("grip", fit.spec.grip, fit, l)} grip; ${fit.spec.handedness}-handed; ${fit.spec.purchase} build.`,
+    ...(speed ? [
+      `7-iron club speed used by the engine: ${f.speed(speed.mean, 1)} (±${f.speed(speed.sd, 1)}, from ${speed.sources})`
+        + (statedSpeed ? `; golfer stated ${statedSpeed}` : "")
+        + ". Self-reported carries and speeds usually run a bit above normal-swing TrackMan averages, so the engine adjusts unmeasured numbers slightly until verified by a launch monitor or slow-motion video."
+        + (speedGap ? " That gap is big enough to mention: if you haven't yet, tell them once, kindly, which speed the fit "
+          + "uses and why, and that a launch monitor photo or swing video would settle it." : ""),
+    ] : []),
     "Parts (confirmed means the engine is at least 95% sure, and on test golfers it was right 99% of the time when it said so):",
     ...comps.map((c) => partLine(c, fit, l)),
     unsettled.length ? `Not yet confirmed: ${unsettled.map((c) => l.t.part[c.part].toLowerCase()).join(", ")}.`

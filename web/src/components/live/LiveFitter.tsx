@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ConversationProvider, useConversation } from "@elevenlabs/react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -41,6 +42,7 @@ export function LiveFitter() {
 
 function Session() {
   const l = useI18n();
+  const router = useRouter();
   const localeRef = useRef<Locale>({ lang: l.lang, units: l.units });
   localeRef.current = { lang: l.lang, units: l.units };
   const lRef = useRef(l);
@@ -65,6 +67,9 @@ function Session() {
   const measureOpenedAt = useRef(0);
   const lastCueAt = useRef(0);
   const lastCueText = useRef("");
+  const speakingRef = useRef(false);
+  const textModeRef = useRef(false);
+  textModeRef.current = textMode;
 
   const addLine = (ln: Line) => setLines((ls) => [...ls, ln]);
   const flash = (cs: Change[]) => {
@@ -83,6 +88,25 @@ function Session() {
       if (k) addLine({ role: "app", text: lRef.current.t.live.opened(lRef.current.t.live.kind[k]) });
     },
     onResults: () => setResultsOpen(true),
+    onOpenBreakdown: () => {
+      const id = session.current?.s.fit?.fit_id;
+      if (!id) return;
+      if (textModeRef.current) {
+        setTimeout(() => { conv.endSession(); router.push(`/fit/${id}`); }, 400);
+        return;
+      }
+      const started = Date.now();
+      const poll = () => {
+        const elapsed = Date.now() - started;
+        if ((elapsed > 1400 && !speakingRef.current) || elapsed > 6500) {
+          conv.endSession();
+          router.push(`/fit/${id}`);
+          return;
+        }
+        setTimeout(poll, 200);
+      };
+      setTimeout(poll, 400);
+    },
   }, () => localeRef.current, initial);
   const session = useRef<FitterSession>(null);
 
@@ -98,6 +122,7 @@ function Session() {
     onDisconnect: () => setPhase((p) => (p === "connecting" ? "intro" : "ended")),
     onError: (m) => setErr(m || lRef.current.t.live.dropped),
   });
+  speakingRef.current = conv.isSpeaking;
 
   const send = (text: string) => {
     sent.current.add(text.trim());
@@ -222,12 +247,18 @@ function Session() {
     const need = needList(s.answers, al);
     conv.sendContextualUpdate(`[app] Returning golfer (language: ${l.lang}, units: ${l.units}). What they told you before: ${known}. `
       + (need.length ? `Still needed before a fit: ${need.join(", ")}. ` : "")
-      + (s.fit ? `Current fit:\n${fitBrief(s.fit, evidenceKeysOf(s.evidence, s.fit), al)}` : ""));
+      + (s.fit ? `Current fit:\n${fitBrief(s.fit, evidenceKeysOf(s.evidence, s.fit), al, s.answers)}` : ""));
   }, [phase, conv, l.lang, l.units]);
 
   const end = () => {
     conv.endSession();
     setPhase("ended");
+  };
+
+  const openFullBreakdown = () => {
+    if (!fit) return;
+    conv.endSession();
+    router.push(`/fit/${fit.fit_id}`);
   };
 
   if (phase === "intro" || phase === "connecting") {
@@ -306,7 +337,7 @@ function Session() {
       {resultsOpen && fit && (
         <Sheet title={l.t.live.resultsTitle} caption={lastFitterLine(lines)} speaking={conv.isSpeaking}
                textMode={textMode} muted={conv.isMuted} onMute={() => conv.setMuted(!conv.isMuted)} onClose={() => setResultsOpen(false)}>
-          <ResultsPreview fit={fit} />
+          <ResultsPreview fit={fit} onOpenFull={openFullBreakdown} />
         </Sheet>
       )}
     </div>
@@ -427,7 +458,7 @@ function SpecPill({ fit, answers, changed, onOpen }: {
   const need = needList(answers, l);
   const answered = Math.max(0, 7 - need.length);
   const confirmed = comps.filter((c) => certainty(c).key === "confirmed").length;
-  const progressBadge = fit ? `${confirmed}/${PARTS.length}` : `${answered}/7`;
+  const progressBadge = fit ? l.t.live.hud.confirmedProgress(confirmed, PARTS.length) : l.t.live.hud.answersProgress(answered);
   const img = fit ? headImage(fit.spec.head, 240) : undefined;
   return (
     <div className="relative">
@@ -440,7 +471,8 @@ function SpecPill({ fit, answers, changed, onOpen }: {
         <span className="truncate font-medium text-paper/90">
           {fit ? `${fit.spec.head_name} · ${fit.spec.purchase === "stock" ? l.t.spec.stock : l.t.spec.custom}` : l.t.live.hud.yourSpec}
         </span>
-        <span className={cx("shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold tabular-nums",
+        <span title={progressBadge}
+              className={cx("shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold tabular-nums",
                             fit && confirmed === PARTS.length ? "bg-[#132a1c] text-[#9fd3b0]" : "bg-white/10 text-white/75")}>
           {progressBadge}
         </span>
@@ -697,7 +729,7 @@ function Measurement({ kind, heightCm, onCoach, onEvidence, onPhone, attached }:
   );
 }
 
-function ResultsPreview({ fit }: { fit: FitResponse }) {
+function ResultsPreview({ fit, onOpenFull }: { fit: FitResponse; onOpenFull: () => void }) {
   const l = useI18n();
   const s = fit.spec;
   const img = headImage(s.head, 480);
@@ -734,11 +766,10 @@ function ResultsPreview({ fit }: { fit: FitResponse }) {
         <span>{l.t.result.orderOnTakomo(s.head_name)}</span>
         <ExternalIcon />
       </a>
-      <Link href={`/fit/${fit.fit_id}`} target="_blank"
-            className="block rounded-full border border-white/25 py-3 text-center font-medium text-paper hover:bg-white/10">
+      <button type="button" onClick={onOpenFull}
+              className="block w-full rounded-full border border-white/25 py-3 text-center font-medium text-paper hover:bg-white/10">
         {l.t.live.openFull}
-      </Link>
-      <p className="text-center text-[12px] text-white/45">{l.t.live.newTab}</p>
+      </button>
     </div>
   );
 }

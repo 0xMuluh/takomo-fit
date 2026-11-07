@@ -18,6 +18,7 @@ export type ToolHost = {
   startMeasurement?: (k: Kind) => string;
   cancelMeasurement?: () => string;
   showResults?: () => string;
+  openFullBreakdown?: () => string;
 };
 
 const NOT_HERE = "That isn't available on this screen. The golfer can go back to the live fitting to do it.";
@@ -51,7 +52,7 @@ export function fitterTools(h: ToolHost) {
     record_answers: guard<AnswerParams>((p) => (h.recordAnswers ? h.recordAnswers(p) : NOT_HERE)),
     get_fit: guard(() => {
       const s = h.state();
-      return s.fit ? fitBrief(s.fit, evidenceKeysOf(s.evidence, s.fit), l()) : noFit(s);
+      return s.fit ? fitBrief(s.fit, evidenceKeysOf(s.evidence, s.fit), l(), s.answers) : noFit(s);
     }),
     explain_part: guard<{ part: Component["part"] }>(({ part }) => {
       const s = h.state();
@@ -76,6 +77,7 @@ export function fitterTools(h: ToolHost) {
     }),
     start_measurement: guard<{ kind: Kind }>(({ kind }) => (h.startMeasurement ? h.startMeasurement(kind) : NOT_HERE)),
     cancel_measurement: guard(() => (h.cancelMeasurement ? h.cancelMeasurement() : NOT_HERE)),
-    show_results: guard(() => (h.showResults ? h.showResults() : "The full breakdown is already on their screen.")),
+    show_results: guard(() => (h.showResults ? h.showResults() : "The summary preview is already on their screen.")),
+    open_full_breakdown: guard(() => (h.openFullBreakdown ? h.openFullBreakdown() : "The full breakdown is already on their screen.")),
   };
 }

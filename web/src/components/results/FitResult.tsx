@@ -234,7 +234,7 @@ export function FitResult({ id }: { id: string }) {
 
       <AskFitter fit={fit} ctx={ctx} />
 
-      <WhatIf fit={fit} />
+      <WhatIf fit={fit} ctx={ctx} />
 
       {fit.warnings && fit.warnings.length > 0 && (
         <ul className="list-disc space-y-1 pl-5 text-[13px] text-muted">{fit.warnings.map((w) => <li key={w}>{w}</li>)}</ul>

@@ -4,12 +4,19 @@ import { useState } from "react";
 import { useI18n } from "@/i18n/context";
 import { api, type FitResponse, type Overrides, type WhatIfResponse } from "@/lib/api";
 import { certaintySummary } from "@/lib/format";
+import type { FitContext } from "@/lib/session";
 import { Button, Card, Choice, ErrorNote, Spinner } from "../ui";
 
-export function WhatIf({ fit }: { fit: FitResponse }) {
+export function WhatIf({ fit, ctx }: { fit: FitResponse; ctx?: FitContext }) {
   const l = useI18n();
   const speed0 = Math.round(fit.estimates.speed?.mean ?? 75);
   const height0 = Math.round(fit.estimates.height?.mean ?? 175);
+  const q = ctx?.q;
+  const saidNote = q?.speed_mph != null && Math.round(q.speed_mph) !== speed0
+    ? l.t.whatIf.saidSpeed(l.f.speed(Math.round(q.speed_mph)), l.f.speed(speed0))
+    : q?.speed_mph == null && q?.carry_yd != null
+      ? l.t.whatIf.saidCarry(l.f.dist(q.carry_yd), l.f.speed(speed0))
+      : undefined;
   const [speed, setSpeed] = useState(speed0);
   const [height, setHeight] = useState(height0);
   const [flight, setFlight] = useState<Overrides["flight"]>();
@@ -42,6 +49,7 @@ export function WhatIf({ fit }: { fit: FitResponse }) {
         <p className="text-[14px] text-muted">{l.t.whatIf.intro}</p>
       </div>
       <Slider label={l.t.whatIf.speed} fmt={(v) => l.f.speed(v)} now={l.t.whatIf.now} value={speed} min={50} max={110} onChange={setSpeed} base={speed0} />
+      {saidNote && <p className="-mt-2 text-[12px] text-muted">{saidNote}</p>}
       <Slider label={l.t.whatIf.height} fmt={(v) => l.f.height(v)} now={l.t.whatIf.now} value={height} min={145} max={210} onChange={setHeight} base={height0} />
       <div>
         <div className="mb-2 text-[13px] font-medium text-muted">{l.t.whatIf.flight}</div>

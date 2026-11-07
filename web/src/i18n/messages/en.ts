@@ -104,6 +104,8 @@ const en = {
       yourSpec: "Your Takomo Fit",
       buildsHere: "Builds here as you talk.",
       stillNeeds: (list: string) => `${N} still needs your ${list}.`,
+      answersProgress: (n: number) => `${n}/7 answers`,
+      confirmedProgress: (n: number, total: number) => `${n}/${total} confirmed`,
     },
     joining: `${N} is joining…`,
     micOff: "Microphone off",
@@ -112,7 +114,6 @@ const en = {
     mute: "Mute", unmute: "Unmute",
     typeAnswer: "Type your answer…", orType: "Or type here…", messageLabel: `Message ${N}`,
     openFull: "Open the full breakdown",
-    newTab: `Opens in a new tab so ${N} stays on the line.`,
   },
   phone: {
     here: "Use this computer", phone: "Use my phone",
@@ -129,7 +130,7 @@ const en = {
   },
 
   agent: {
-    hello: `Hey, I'm ${N}, Takomo's AI fitter. This takes about 5 minutes in three steps: 7 quick questions about `
+    hello: `Hey, I'm ${N}, Takomo's AI fitter. This takes about 3–6 minutes in three steps: 7 quick questions about `
       + "your game, an instant first read on your spec, and optional phone measurements to lock it in. What's your "
       + "first name, and what are you looking for in new irons?",
     welcomeBack: (name?: string) => `Welcome back${name ? `, ${name}` : ""}. ${N} here again. Let's pick up where we left off.`,
@@ -562,6 +563,8 @@ const en = {
     show: "Show me", running: "Re-running your fit", failed: "That didn't work. Please try again.",
     same: "Your spec would stay the same.",
     now: (v: string) => `(now ${v})`,
+    saidSpeed: (said: string, used: string) => `You said ${said}; the fit uses ${used}.`,
+    saidCarry: (said: string, used: string) => `From your ${said} carry, the fit uses ${used}.`,
   },
 
   ask: {
