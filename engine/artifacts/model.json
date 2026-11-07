@@ -1,0 +1,363 @@
+{
+  "version": "pf-0.1.0-202611070240",
+  "artifact_format": 1,
+  "package_version": "0.1.0",
+  "trained_at": "202611070240",
+  "train_rows": 20000,
+  "train_dir": "../lab/data/train",
+  "products_sha": "bb5a20847b34",
+  "sklearn": "1.5.1",
+  "python": "3.12.12",
+  "validation": {
+    "dev": {
+      "spec_agreement_score": 87.91,
+      "full_spec_exact_pct": 39.0,
+      "n_golfers": 3000,
+      "n_unbuildable_or_missing": 0,
+      "n_predicted": 3000,
+      "component_pct": {
+        "head": 94.8,
+        "flex": 90.8,
+        "material": 97.2,
+        "shaft_model": 88.5,
+        "length": 92.7,
+        "lie": 58.3,
+        "grip": 90.5,
+        "purchase": 90.6,
+        "handedness": 100.0
+      },
+      "measurement_mae": {
+        "est_7i_speed_mph": {
+          "mae": 1.767,
+          "n": 3000
+        },
+        "est_height_cm": {
+          "mae": 0.881,
+          "n": 3000
+        },
+        "est_wrist_to_floor_cm": {
+          "mae": 1.278,
+          "n": 3000
+        },
+        "est_hand_length_cm": {
+          "mae": 0.266,
+          "n": 3000
+        },
+        "est_lie_need_deg": {
+          "mae": 0.628,
+          "n": 3000
+        },
+        "est_carry_yd_101-mkii": {
+          "mae": 5.656,
+          "n": 3000
+        },
+        "est_carry_yd_201-mkii": {
+          "mae": 5.875,
+          "n": 3000
+        },
+        "est_carry_yd_201t-mkii": {
+          "mae": 6.05,
+          "n": 3000
+        },
+        "est_carry_yd_301-cb": {
+          "mae": 6.058,
+          "n": 3000
+        },
+        "est_carry_yd_301-mb": {
+          "mae": 6.187,
+          "n": 3000
+        }
+      }
+    },
+    "calibration": {
+      "head": {
+        "said": 0.882,
+        "was_right": 0.871,
+        "ECE": 0.014,
+        "bins": [
+          {
+            "bin": "0.00-0.50",
+            "n": 84,
+            "said": 0.424,
+            "was_right": 0.44
+          },
+          {
+            "bin": "0.50-0.60",
+            "n": 181,
+            "said": 0.553,
+            "was_right": 0.558
+          },
+          {
+            "bin": "0.60-0.70",
+            "n": 223,
+            "said": 0.654,
+            "was_right": 0.664
+          },
+          {
+            "bin": "0.70-0.80",
+            "n": 286,
+            "said": 0.752,
+            "was_right": 0.731
+          },
+          {
+            "bin": "0.80-0.90",
+            "n": 367,
+            "said": 0.852,
+            "was_right": 0.793
+          },
+          {
+            "bin": "0.90-0.95",
+            "n": 185,
+            "said": 0.926,
+            "was_right": 0.903
+          },
+          {
+            "bin": "0.95-1.00",
+            "n": 1674,
+            "said": 0.994,
+            "was_right": 0.991
+          }
+        ]
+      },
+      "flex": {
+        "said": 0.835,
+        "was_right": 0.836,
+        "ECE": 0.0064,
+        "bins": [
+          {
+            "bin": "0.00-0.50",
+            "n": 1,
+            "said": 0.499,
+            "was_right": 1.0
+          },
+          {
+            "bin": "0.50-0.60",
+            "n": 317,
+            "said": 0.549,
+            "was_right": 0.53
+          },
+          {
+            "bin": "0.60-0.70",
+            "n": 347,
+            "said": 0.65,
+            "was_right": 0.66
+          },
+          {
+            "bin": "0.70-0.80",
+            "n": 429,
+            "said": 0.75,
+            "was_right": 0.762
+          },
+          {
+            "bin": "0.80-0.90",
+            "n": 613,
+            "said": 0.846,
+            "was_right": 0.848
+          },
+          {
+            "bin": "0.90-0.95",
+            "n": 244,
+            "said": 0.925,
+            "was_right": 0.918
+          },
+          {
+            "bin": "0.95-1.00",
+            "n": 1049,
+            "said": 0.991,
+            "was_right": 0.991
+          }
+        ]
+      },
+      "length": {
+        "said": 0.898,
+        "was_right": 0.893,
+        "ECE": 0.0085,
+        "bins": [
+          {
+            "bin": "0.00-0.50",
+            "n": 45,
+            "said": 0.435,
+            "was_right": 0.289
+          },
+          {
+            "bin": "0.50-0.60",
+            "n": 166,
+            "said": 0.549,
+            "was_right": 0.536
+          },
+          {
+            "bin": "0.60-0.70",
+            "n": 217,
+            "said": 0.652,
+            "was_right": 0.673
+          },
+          {
+            "bin": "0.70-0.80",
+            "n": 241,
+            "said": 0.75,
+            "was_right": 0.751
+          },
+          {
+            "bin": "0.80-0.90",
+            "n": 290,
+            "said": 0.854,
+            "was_right": 0.828
+          },
+          {
+            "bin": "0.90-0.95",
+            "n": 229,
+            "said": 0.924,
+            "was_right": 0.908
+          },
+          {
+            "bin": "0.95-1.00",
+            "n": 1812,
+            "said": 0.994,
+            "was_right": 0.994
+          }
+        ]
+      },
+      "lie": {
+        "said": 0.494,
+        "was_right": 0.49,
+        "ECE": 0.0098,
+        "bins": [
+          {
+            "bin": "0.00-0.50",
+            "n": 2226,
+            "said": 0.37,
+            "was_right": 0.364
+          },
+          {
+            "bin": "0.50-0.60",
+            "n": 78,
+            "said": 0.548,
+            "was_right": 0.538
+          },
+          {
+            "bin": "0.60-0.70",
+            "n": 80,
+            "said": 0.647,
+            "was_right": 0.562
+          },
+          {
+            "bin": "0.70-0.80",
+            "n": 97,
+            "said": 0.75,
+            "was_right": 0.784
+          },
+          {
+            "bin": "0.80-0.90",
+            "n": 101,
+            "said": 0.855,
+            "was_right": 0.842
+          },
+          {
+            "bin": "0.90-0.95",
+            "n": 89,
+            "said": 0.926,
+            "was_right": 0.933
+          },
+          {
+            "bin": "0.95-1.00",
+            "n": 329,
+            "said": 0.984,
+            "was_right": 0.997
+          }
+        ]
+      },
+      "grip": {
+        "said": 0.86,
+        "was_right": 0.874,
+        "ECE": 0.0145,
+        "bins": [
+          {
+            "bin": "0.50-0.60",
+            "n": 288,
+            "said": 0.548,
+            "was_right": 0.573
+          },
+          {
+            "bin": "0.60-0.70",
+            "n": 275,
+            "said": 0.653,
+            "was_right": 0.655
+          },
+          {
+            "bin": "0.70-0.80",
+            "n": 328,
+            "said": 0.752,
+            "was_right": 0.796
+          },
+          {
+            "bin": "0.80-0.90",
+            "n": 478,
+            "said": 0.856,
+            "was_right": 0.889
+          },
+          {
+            "bin": "0.90-0.95",
+            "n": 404,
+            "said": 0.927,
+            "was_right": 0.938
+          },
+          {
+            "bin": "0.95-1.00",
+            "n": 1227,
+            "said": 0.989,
+            "was_right": 0.988
+          }
+        ]
+      },
+      "whole spec": {
+        "said": 0.285,
+        "was_right": 0.28,
+        "ECE": 0.0094,
+        "bins": [
+          {
+            "bin": "0.00-0.50",
+            "n": 2564,
+            "said": 0.214,
+            "was_right": 0.21
+          },
+          {
+            "bin": "0.50-0.60",
+            "n": 127,
+            "said": 0.549,
+            "was_right": 0.512
+          },
+          {
+            "bin": "0.60-0.70",
+            "n": 106,
+            "said": 0.647,
+            "was_right": 0.67
+          },
+          {
+            "bin": "0.70-0.80",
+            "n": 84,
+            "said": 0.745,
+            "was_right": 0.798
+          },
+          {
+            "bin": "0.80-0.90",
+            "n": 72,
+            "said": 0.839,
+            "was_right": 0.764
+          },
+          {
+            "bin": "0.90-0.95",
+            "n": 32,
+            "said": 0.924,
+            "was_right": 0.906
+          },
+          {
+            "bin": "0.95-1.00",
+            "n": 15,
+            "said": 0.974,
+            "was_right": 1.0
+          }
+        ]
+      }
+    }
+  }
+}

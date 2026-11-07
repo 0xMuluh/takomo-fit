@@ -1,0 +1,32 @@
+# One server with HTTPS: cp .env.example .env, fill it in, then `docker compose up -d --build`.
+services:
+  engine:
+    build: ./engine
+    environment:
+      ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
+      ELEVENLABS_AGENT_ID: ${ELEVENLABS_AGENT_ID:-}
+      PF_CORS_ORIGINS: https://${PF_DOMAIN:?set PF_DOMAIN}
+      PF_VOICE_SESSIONS_PER_HOUR: ${PF_VOICE_SESSIONS_PER_HOUR:-20}
+      PF_STORE_PATH: /data/fits.db
+    volumes: [engine_data:/data]
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./web
+      args:
+        PF_API_URL: http://engine:8080
+    depends_on: [engine]
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2
+    command: caddy reverse-proxy --from ${PF_DOMAIN:?set PF_DOMAIN} --to web:3000
+    ports: ["80:80", "443:443"]
+    volumes: [caddy_data:/data]
+    depends_on: [web]
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  engine_data:

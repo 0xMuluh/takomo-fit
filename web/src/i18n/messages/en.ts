@@ -1,0 +1,592 @@
+import { FITTER_NAME as N } from "../config";
+
+type Dir = "left" | "right" | "both";
+
+const en = {
+  meta: {
+    title: "Takomo Fit",
+    pages: { live: "Your Takomo Fit", guided: "Guided Takomo Fit", spec: "Your Takomo Fit" },
+    description: `A full Takomo 7-iron fitting from your phone with ${N}, Takomo's AI fitter: the spec, the reasons, and how sure we are.`,
+  },
+  switcher: { language: "Language", units: "Units", imperial: "yd · mph", metric: "m · km/h" },
+  header: { findFit: "Takomo Fit", store: "Takomo store", faq: "FAQ & Support" },
+  common: {
+    send: "Send", done: "Done", skip: "Skip", cancel: "Cancel", continue: "Continue", useThis: "Use this",
+    retake: "Retake", notSure: "Not sure", undo: "Undo", restart: "Restart", measuring: "Measuring",
+    dismiss: "Dismiss", eg: (v: string) => `e.g. ${v}`, and: " and ", or: (a: string, b: string) => `${a} or ${b}`,
+    minutes: (n: number) => `~${n} min`,
+  },
+  fitter: { role: "Takomo's AI fitter", initial: N[0], aiNotice: `${N} is an AI, not a person.` },
+
+  home: {
+    kicker: "Takomo Fit",
+    title: "The fitter in your pocket.",
+    intro: `Meet ${N}, Takomo's AI fitter. A live 7-iron fitting on your phone.`,
+    steps: [
+      [`Talk to ${N}`, "Voice or text."],
+      ["Get measured", "Through your phone's camera."],
+      ["Watch your spec build", "Head, shaft, length, lie, grip."],
+      ["Ask anything", "Why this shaft? What if…?"],
+    ],
+    start: "Start your Takomo Fit",
+    guided: "Tap through questions instead",
+    privacy: "Photos and videos stay on your phone.",
+    needs: "15 min · 7-iron + bank card",
+    example: "Example Takomo Fit",
+  },
+
+  part: { head: "Head", shaft: "Shaft", length: "Length", lie: "Lie angle", grip: "Grip", purchase: "Build" },
+  spec: {
+    lie: "Lie", hand: "Hand", left: "Left", right: "Right", stock: "Stock", custom: "Custom", standard: "Standard",
+    inch: (v: string) => `${v} in`,
+    upright: (v: string) => `${v} upright`,
+    flat: (v: string) => `${v} flat`,
+    grip: { standard: "Standard", midsize: "Midsize", oversize: "Oversize" } as Record<string, string>,
+    flex: { lady: "Ladies", senior: "Senior", regular: "Regular", stiff: "Stiff", "x-stiff": "X-Stiff" } as Record<string, string>,
+    material: { steel: "Steel", graphite: "Graphite" } as Record<string, string>,
+    improves: { lie: "lie", grip: "grip", flex: "shaft flex", head: "head", shaft: "shaft", length: "length" } as Record<string, string>,
+  },
+  certainty: { confirmed: "Confirmed", likely: "Likely", check: "To check" },
+  summary: {
+    settled: (list: string) => `Settled: ${list}.`,
+    close: (list: string) => `Still to check: ${list}.`,
+  },
+  testTitle: {
+    "ball-line test": "Ball-line test",
+    "hand photo with a bank card": "Hand photo with a card",
+    "slow-motion swing video": "Slow-motion swing video",
+    "launch monitor upload": "Launch monitor session",
+  } as Record<string, string>,
+  missing: {
+    score: "typical score", carry: "7-iron carry or club speed", flight: "ball flight", tempo: "tempo", age: "age",
+    sex: "sex", height: "height",
+  },
+
+  live: {
+    kind: {
+      body: "Full-body photo", hand: "Hand photo", swing: "Swing", ball_line: "Ball-line test",
+      launch_monitor: "Launch monitor session",
+    },
+    kindHint: {
+      launch_monitor: "Photo, video, TrackMan link or CSV",
+      swing: "Film or upload a swing",
+      body: "Head to toe: length and lie",
+      hand: "Next to a bank card: grip size",
+      ball_line: "Marker line on a ball: lie angle",
+    },
+    attach: "Add numbers or a measurement",
+    opened: (what: string) => `Opened: ${what}`,
+    dropped: `The connection to ${N} dropped.`,
+    measuredNoUpdate: "We measured that, but couldn't update your fit. Check your connection.",
+    busy: "Lots of golfers are being fitted right now. Please try again in a few minutes.",
+    micNeeded: `${N} needs the microphone. Allow it in your browser settings, or choose to type instead.`,
+    unreachable: `We couldn't reach ${N}. Check your connection and try again.`,
+    liveFitting: "Takomo Fit", ended: "Session ended", results: "Your Takomo Fit", end: "End",
+    seeFull: "See my Takomo Fit", again: `Talk to ${N} again`, resultsTitle: "Your Takomo Fit so far",
+    intro: {
+      title: "Start your Takomo Fit",
+      body: `A studio fitting with ${N}: your game first, then measurements through your camera.`,
+      bullets: ["15 min", "7-iron + bank card", "Room to swing", "Stop any time"],
+      welcomeBack: (name?: string) => `Welcome back${name ? `, ${name}` : ""}.`,
+      remembers: `${N} remembers where you were.`,
+      continueText: "Continue by text",
+      unavailable: "The live fitter isn't switched on here yet.",
+      unavailableLink: "Take the guided fitting instead",
+      unavailableTail: "; it uses the same engine.",
+      connecting: `Connecting to ${N}…`,
+      startNew: "Start a new Takomo Fit",
+      start: "Start your Takomo Fit",
+      type: "I'd rather type",
+      guided: "Or tap through questions",
+      privacy: "Photos and video stay on your phone. Voice is handled by our speech provider.",
+    },
+    hud: {
+      yourSpec: "Your Takomo Fit",
+      buildsHere: "Builds here as you talk.",
+      stillNeeds: (list: string) => `${N} still needs your ${list}.`,
+    },
+    joining: `${N} is joining…`,
+    micOff: "Microphone off",
+    talking: `${N} is talking. Speak to interrupt.`,
+    listening: "Listening…",
+    mute: "Mute", unmute: "Unmute",
+    typeAnswer: "Type your answer…", orType: "Or type here…", messageLabel: `Message ${N}`,
+    notNow: "Not now",
+    openFull: "Open the full breakdown",
+    newTab: `Opens in a new tab so ${N} stays on the line.`,
+  },
+
+  agent: {
+    hello: `Hey, I'm ${N}, Takomo's AI fitter. This takes about 5 minutes in three steps: 7 quick questions about `
+      + "your game, an instant first read on your spec, and optional phone measurements to lock it in. What's your "
+      + "first name, and what are you looking for in new irons?",
+    welcomeBack: (name?: string) => `Welcome back${name ? `, ${name}` : ""}. ${N} here again. Let's pick up where we left off.`,
+    onFit: (name?: string) => `Hi${name ? ` ${name}` : ""}, ${N} here. I've got your fit in front of me. Want me to walk `
+      + "you through it, or is there one part you're curious about?",
+  },
+
+  camera: {
+    blocked: "Camera access is blocked. Allow it in your browser settings, then try again.",
+    unavailable: "We couldn't open the camera on this device.",
+    opening: "Opening camera…", flip: "Flip", flipLabel: "Switch camera",
+  },
+
+  vision: {
+    noHand: "We couldn't find your hand. Lay it flat, fingers together, fully in frame.",
+    cardEdges: "We couldn't read the card's edges. Put it on a plain surface and line it up with the guide.",
+    cardSkew: "Hold the phone flat above the table so the card isn't skewed.",
+    fingersTogether: "Keep your fingers together.",
+    handImplausible: "That hand length doesn't look right. Try again with the card next to your hand.",
+    tapCorners: "Tap two opposite corners of the card.",
+    noPerson: "We couldn't find a person in the photo. Stand fully in frame and try again.",
+    hidden: "Some of you is hidden. Head, both hands and both feet must be clearly visible.",
+    noHeadTop: "We couldn't see the top of your head. Leave space above it.",
+    armsDown: "Let both arms hang straight down.",
+    standStraight: "Stand straight with your weight even on both feet.",
+    phoneLevel: "Hold the phone level, not tilted.",
+    stepCloser: "Step closer so you fill at least half the picture height.",
+    margins: "Leave a little space above your head and below your feet.",
+    bodyImplausible: "That measurement doesn't look right. Check your arms hang straight and try again.",
+    noBackswing: "No backswing found. Film the whole swing from address to finish.",
+    noImpact: "We couldn't find impact. Keep filming until after the ball is hit.",
+    notInVideo: "We couldn't see you in the video. Film face-on with your whole body in frame.",
+    lostHands: "I lost sight of your hands. Keep your whole body in frame.",
+    slowCamera: "The camera is running too slowly. Turn on more light and try again.",
+    notASwing: "That didn't look like one full swing. Make a full, normal swing.",
+  },
+
+  media: { takePhoto: "Take photo", recordVideo: "Record video", library: "Choose from library" },
+  photoFailed: "Something went wrong reading that photo. Please try another.",
+
+  captures: {
+    title: {
+      body: "Full-body photo", hand: "Hand photo with a card", swing: "Swing video", ballLine: "Ball-line test",
+      radar: "Launch monitor session",
+    },
+    sets: {
+      body: "length and lie", hand: "grip size", swing: "shaft and tempo", ballLine: "lie angle", radar: "shaft and head",
+    },
+    needs: {
+      body: "Someone to hold the phone, or a timer", hand: "Any bank card", swing: "A 7-iron and room to swing",
+      ballLine: "Marker pen, balls, a hitting mat", radar: "A photo of the screen, a TrackMan link or a CSV file",
+    },
+    setsYour: (sets: string, min: string) => `Sets your ${sets} · ${min}`,
+    skipped: (title: string) => `${title} · skipped`,
+    intro: {
+      body: (toeHeel: boolean) => "A fitter starts with your height and wrist-to-floor; they set length and the "
+        + "starting lie. One full-body photo gives me both."
+        + (toeHeel ? " It also checks whether club length explains your toe and heel strikes." : ""),
+      hand: (unsure: boolean) => "Grip size comes from your hand. One photo next to any bank card measures it to a "
+        + "few millimetres." + (unsure ? " You weren't sure of your glove size, so this one matters." : ""),
+      swing: (carry: boolean, tempo: boolean) => "Next I'd watch you swing. A face-on video gives me your tempo, and "
+        + "filmed at 240 fps, your clubhead speed."
+        + (carry || tempo
+          ? ` You weren't sure about your ${[carry && "distance", tempo && "tempo"].filter(Boolean).join(" or ")}, `
+            + "so this is the most useful thing you can do."
+          : ""),
+      ballLine: (dir?: Dir) => "This is how a fitter checks lie: how the club actually meets the ground when you swing."
+        + (dir ? ` You said your misses start ${dir === "both" ? "both ways" : dir}; the wrong lie angle is one cause.` : "")
+        + " You'll need somewhere to hit balls.",
+      radar: "If you or a friend has a launch monitor, ten 7-iron shots measure your speed and launch directly. It's "
+        + "the single strongest piece of evidence for your shaft.",
+    },
+  },
+
+  body: {
+    onDevice: "Measuring on your phone. The photo never leaves it.",
+    wtf: "Wrist to floor",
+    ofHeight: (pct: string, height: string) => `${pct} of your ${height} height. This sets your club length.`,
+    retakeAdvice: (issues: string) => `We'll use this, with less weight, but a retake will be more accurate: ${issues}`,
+    steps: (room: string) => [
+      "Wear the shoes you play in and stand on a hard floor.",
+      "Arms hanging relaxed at your sides, looking straight ahead.",
+      `Have someone hold the phone at waist height, ${room} away, or prop it up and use the timer.`,
+      "Your whole body must be in the picture, with a little space above your head.",
+    ],
+  },
+  hand: {
+    steps: [
+      "Put any bank, ID or loyalty card on a plain table. They are all the same size.",
+      "Lay the hand you wear a glove on flat next to it, fingers together, wrist crease visible.",
+      "Hold the phone flat, straight above, so the whole hand and card fill the picture.",
+    ],
+    measured: "Here is what we measured.",
+    length: "Hand length, wrist crease to middle fingertip",
+    setsGrip: "This sets your grip size.",
+    retakeAdvice: (issues: string) => `A retake will be more accurate: ${issues}`,
+    markAgain: "Mark again", newPhoto: "New photo",
+  },
+  ballLine: {
+    prompts: [
+      "Tap the bottom end of the marker line on the face.",
+      "Tap the top end of the marker line.",
+      "Tap the leading edge at the heel end (nearest the shaft).",
+      "Tap the leading edge at the toe end.",
+    ],
+    offLine: "That line is more than 20° off. Make sure you tapped the line ends, then the leading edge, and try again.",
+    steps: [
+      "Draw a straight line on a ball with a whiteboard marker.",
+      "Set it on a hard mat with the line vertical, facing the club.",
+      "Hit a 7-iron with your normal swing.",
+      "Photograph the face close up, straight on, so the mark and the leading edge are clear.",
+      "Wipe the face and repeat. Five shots is ideal; three is the minimum.",
+    ],
+    shots: (n: number) => `Shots measured: ${n}`,
+    average: (v: string) => `Average ${v}. Positive means the toe was up at impact (lie too upright).`,
+    photoNext: "Photograph next shot", photoFirst: "Photograph first shot",
+    use: (n: number) => `Use ${n} shots`, removeLast: "Remove last shot",
+  },
+  radar: {
+    intro: "Hit about ten 7-irons with your normal swing, then export the session as CSV from the app and upload it here.",
+    home: "Home radar", homeHint: "Garmin R10, Mevo, Rapsodo, SkyTrak…",
+    studio: "Studio monitor", studioHint: "TrackMan, GCQuad, Foresight…",
+    choose: "Choose CSV export", readFailed: "We couldn't read that file.",
+    noColumns: "We couldn't find club speed or carry columns in that file.",
+    tooFew: "We need at least three 7-iron shots in the file.",
+    found: (n: number, sevenIron: boolean, avg?: string) =>
+      `Found ${n} ${sevenIron ? "7-iron " : ""}shots${avg ? `, average club speed ${avg}` : ""}.`,
+    using: (cols: string) => `Using: ${cols}`,
+    columns: {
+      club_speed_mph: "club speed", carry_yd: "carry", launch_angle_deg: "launch", landing_angle_deg: "landing angle",
+      dynamic_loft_deg: "dynamic loft", attack_angle_deg: "attack angle", face_to_path_deg: "face to path",
+      side_yd: "side", impact_offset_mm: "impact offset", impact_toe_up_deg: "toe up at impact",
+    } as Record<string, string>,
+    noClub: "No club column found, so we assumed every shot is a 7-iron.",
+    useSession: "Use this session",
+  },
+  swing: {
+    steps: (room: string) => [
+      "Film face-on, from in front of you, with your whole body and club in frame.",
+      `Prop the phone at hip height about ${room} away.`,
+      "One swing with a 7-iron, from address until after impact.",
+      "Slow motion (120 or 240 fps) is best. At 240 fps we can also measure your clubhead speed.",
+    ],
+    howFilm: "How will you film it?", normal: "Normal", slow120: "Slow-mo 120", slow240: "Slow-mo 240",
+    readFailed: "We couldn't read that video. Try recording it again.",
+    tracking: "Tracking your swing on your phone",
+    tryAnother: "Try another video",
+    backswing: "Backswing", downswing: "Downswing", ratio: "Ratio",
+    alsoSpeed: "Also measure clubhead speed", useTempo: "Use tempo", newVideo: "New video",
+    twoFrames: "Mark the clubhead in two different frames.",
+    implausible: (v: string) => `That works out at ${v}, which isn't plausible. Mark again, tapping the clubhead's centre.`,
+    tapBall: (n: number) => `Tap the left edge of the ball, then its right edge (${n}/2). The ball's known size sets the scale.`,
+    stepFrame: "Step to a frame just before impact where the clubhead is sharp, then tap its centre.",
+    movedFrame: "We moved one frame on. Tap the clubhead's centre again.",
+    prevFrame: "Previous frame", nextFrame: "Next frame", frameBack: "◀ Frame", frameFwd: "Frame ▶",
+  },
+  liveBody: {
+    start: "Prop the phone up at waist height, then step back until you're in frame head to toe.",
+    notVisible: "I can't see you yet. Step into the frame.",
+    headHands: "Step back so I can see your head and both hands.",
+    feet: "Step back so I can see your feet.",
+    spaceAbove: "Leave a little space above your head.",
+    feetEdge: "Your feet are at the edge. Step back a little.",
+    closer: "Come a bit closer to the phone.",
+    holdStill: "Hold still…",
+    perfect: "Perfect. Hold still…",
+    got: (n: number, of: number) => `Got ${n} of ${of}. Stay just like that.`,
+    frameFailed: "That frame didn't work. Hold still and I'll try again.",
+    noClean: "I couldn't get a clean measurement. Check the tips above and stand still facing the phone.",
+    tips: (room: string) => [
+      "Golf shoes on, hard floor, arms hanging relaxed.",
+      `Phone propped at waist height, ${room} away, or a friend holding it level.`,
+    ],
+    result: (wtf: string, pct: string) => `Wrist to floor: ${wtf} (${pct} of your height).`,
+  },
+  liveSwing: {
+    useLive: "Use the live camera instead",
+    start: (room: string) => `Prop the phone at hip height about ${room} in front of you, face-on, whole body and club in frame.`,
+    result: (b: string, d: string, r: string) => `Backswing ${b}, downswing ${d}: a ${r} tempo.`,
+    swingDone: (n: number, b: string, d: string, of: number) =>
+      `Swing ${n} done: ${b} back, ${d} down. Reset to address for swing ${n + 1} of ${of}.`,
+    couldntTime: "I couldn't time that one. Reset and swing again.",
+    headToToe: "Step back so I can see you head to toe, face-on to the phone.",
+    address: "Take your address and hold still for a moment.",
+    ready: "Ready. Swing whenever you like.",
+    swinging: "Swinging…",
+    tips: [
+      "Face the phone, whole body and club in frame. A 7-iron, a normal full swing.",
+      "Three swings. Hit balls into a net, or make full practice swings if you have the room.",
+    ],
+    upload: "Have a slow-motion video? Upload it instead; at 240 fps it also measures your clubhead speed.",
+  },
+
+  notes: {
+    wtf: (v: string) => `Your photo puts your wrist-to-floor at ${v}.`,
+    hand: (v: string) => `Your hand measures ${v} from wrist crease to fingertip.`,
+    swing: (b: string, d: string, r: string, speed?: string) =>
+      `Your backswing takes ${b} and your downswing ${d}, a ${r} tempo${speed ? `, with the clubhead at ${speed}` : ""}.`,
+    ballLineSquare: "Your ball-line marks are square to the face: the club is meeting the ground level.",
+    ballLineLean: (v: string, toe: boolean) => `Your ball-line marks lean ${v} toward the ${toe ? "toe" : "heel"} on `
+      + `average, so a standard lie sits ${toe ? "too upright" : "too flat"} for your swing.`,
+    radar: (n: number, avg?: string) => `${n} shots${avg ? `, average club speed ${avg}` : ""}.`,
+    radarSummary: (source: "photo" | "video" | "report" | "csv", speed?: string, shots?: number | null,
+                   from?: { club: string; speed: string }) =>
+      `${source === "photo" ? "From the photo of the screen" : source === "video" ? "From your video" : source === "report" ? "From the TrackMan report" : "From the file"}`
+      + (!speed ? "" : from
+        ? `: ${from.club}, ${shots === 1 ? "one shot" : "average"} ${from.speed}, about ${speed} with a 7-iron`
+        : `: ${shots === 1 ? "one 7-iron shot, club speed" : "average 7-iron club speed"} ${speed}`) + ".",
+    added: "Measurement added.",
+  },
+
+  honest: {
+    title: "What you told us, what we measured",
+    said: "You said", measured: "We measured",
+    saidCarry: (v: string) => `Your 7-iron carries ${v}`,
+    saidSpeed: (v: string) => `Your 7-iron club speed is ${v}`,
+    measuredSpeed: (v: string, sd: string) => `7-iron club speed ${v} (± ${sd})`,
+    carryAt: (v: string, head: string, loft?: string) => `That carries about ${v} with the ${head} 7-iron${loft ? ` (${loft} loft)` : ""}.`,
+    footer: "Nearly every golfer remembers a good one. Your fit runs on the measured number, so it fits the swing "
+      + "you bring on a normal day.",
+  },
+
+  lmImport: {
+    photo: "Photo", photoHint: "Any launch monitor screen or app screenshot",
+    video: "Video", videoHint: "You hitting, with the screen in view",
+    videoTips: "Keep the screen in view a few seconds after each shot.",
+    readingVideo: "Reading your video…",
+    videoPrivacy: "Only still frames are read, then deleted.",
+    retryVideo: "Try another video",
+    link: "TrackMan link", linkHint: "From your TrackMan email",
+    csv: "CSV", csvHint: "Export from the launch monitor app",
+    photoTips: "Get close and straight on. Averages if your screen shows them.",
+    unread: "Couldn't read",
+    unitQ: "Screen distances",
+    yards: "Yards", metres: "Metres",
+    privacy: "Read by our AI, then deleted.",
+    reading: "Reading your screen…",
+    linkLabel: "Paste the report link",
+    fetch: "Get my numbers", fetching: "Getting your report…",
+    check: "Check these match your screen",
+    club: "Club",
+    shots: (n?: number | null) => (n ? `${n} shots` : "Session average"),
+    oneShot: "One shot",
+    spread: (v: string) => `± ${v}`,
+    notes: {
+      single_shot: "One shot, not an average, so it counts for less.",
+      units_guessed: "Units unreadable. Check yards or metres.",
+      carry_implausible: "Carry and speed don't match. Check your screen.",
+      smash_implausible: "Ball and club speed don't match.",
+      low_res: "Screen too small for averages; using your last shot.",
+      unsure: "Unclear numbers left out.",
+    } as Record<string, string>,
+    otherIron: (club: string, speed: string) => `${club}: about ${speed} with a 7-iron. Carry and launch not used.`,
+    notIron: "Irons only (5–9).",
+    unknownClub: "Which club were these shots with?",
+    use: "Yes, use these numbers", retry: "Try another photo", tryLink: "Try another link",
+    errors: {
+      not_configured: "Photo reading is off. Use a TrackMan link or CSV.",
+      unreadable: "Couldn't read that. Try a sharper, straight-on photo.",
+      no_numbers: "No club speed or carry found.",
+      implausible: "That doesn't look like an iron session.",
+      bad_image: "Can't open that file.",
+      provider: "Reader didn't respond. Try again.",
+      not_trackman_link: "Only TrackMan links work. For other brands, send a photo or video.",
+      no_screen: "No launch monitor screen found. Swing video? Use + › Swing.",
+      video_unclear: "No shot was clear enough. Film closer to the screen.",
+      report_not_found: "Report not found. Copy the whole link.",
+      report_private: "That report is private. Send a photo instead.",
+      rate: "Too many tries. Try again later.",
+      generic: "Something went wrong.",
+      video_codec: "This browser can't play that video. Try from the phone that filmed it.",
+    } as Record<string, string>,
+    clubs: {
+      "4i": "4-iron", "5i": "5-iron", "6i": "6-iron", "7i": "7-iron", "8i": "8-iron", "9i": "9-iron",
+      pw: "pitching wedge", gw: "gap wedge", sw: "sand wedge", lw: "lob wedge", hybrid: "hybrid", wood: "fairway wood",
+      driver: "driver",
+    } as Record<string, string>,
+  },
+
+  interview: {
+    scores: ["Under 71", "71–77", "78–84", "85–92", "Over 92"],
+    rounds: ["Under 10", "10–30", "31–50", "Over 50"],
+    under: (v: string) => `Under ${v}`,
+    over: (v: string) => `Over ${v}`,
+    chars: {
+      forgiveness: "Forgiveness", distance: "Distance", "forged feel": "Forged feel",
+      "distance control": "Distance control", workability: "Workability", "less offset": "Less offset",
+      "more offset": "More offset",
+    } as Record<string, string>,
+    misses: {
+      left: "Left", right: "Right", fat: "Fat (ground first)", thin: "Thin", toe: "Off the toe", heel: "Off the heel",
+    },
+    missComment: {
+      start: "Start direction is partly lie angle, so we'll check how your club meets the ground.",
+      toeHeel: "Toe and heel strikes are partly club length; your body photo will check that.",
+      fatThin: "Fat and thin shots are mostly technique, but I'll make sure club length isn't adding to them.",
+    },
+    say: {
+      hand: `Hi, I'm ${N}, Takomo's AI fitter. We'll do this like a studio fitting: a few questions about your game `
+        + "first, then I'll measure you with your phone, and you'll watch your spec firm up as we go. To start, which "
+        + "hand do you play?",
+      score: "How do you usually score over 18 holes? A typical round, not your best day.",
+      rounds: "And roughly how many rounds a year?",
+      carry: "How far does a normal, solid 7-iron fly in the air for you? Carry only, not including roll.",
+      speed: "Great. What's your 7-iron clubhead speed?",
+      carryRange: "No problem, most golfers aren't sure. Which range sounds closest? I'll measure it properly later.",
+      carryCheck: (dist: string, long: boolean, score: string) => `${dist} is ${long ? "longer" : "shorter"} than most `
+        + `golfers who usually shoot ${score}. Self-reported distances are often off, so let me check.`,
+      club: "What 7-iron do you play now? Lofts vary a lot between brands. Some modern 7-irons are 4–5° stronger than "
+        + "ours, which is why they fly further. If you know the loft, I can compare like for like.",
+      misses: "Where do your bad 7-iron shots usually go? Pick any that apply.",
+      flight: "How does your 7-iron usually fly?",
+      tempo: "How would you describe your swing tempo?",
+      priorities: (tempoUnsure: boolean) => (tempoUnsure ? "That's fine, I'll measure your tempo from a video. " : "")
+        + "What do you want most from your irons? Pick up to three, most important first.",
+      body: "Last, a few details for the measurements.",
+      glove: "Do you know your glove size?",
+    },
+    rightHanded: "Right-handed", leftHanded: "Left-handed",
+    isCarry: "That's carry, in the air", isCarryEcho: "That's carry", includesRoll: "It includes roll",
+    thatsRight: "That's right",
+    flight: { low: "Low", mid: "Mid", high: "High" },
+    flightHint: { low: "Flat, boring", mid: "In between", high: "Climbs steeply" },
+    tempo: { smooth: "Smooth", moderate: "Moderate", quick: "Quick" },
+    tempoHint: { smooth: "Unhurried, even", moderate: "In between", quick: "Fast back and through" },
+    about: (v: string) => `About ${v}`,
+    carryIn: (unit: string) => `Carry in ${unit}`,
+    yards: "yards", metres: "metres",
+    knowSpeed: "I know my swing speed", knowSpeedEcho: "I know my clubhead speed",
+    clubPlaceholder: "Brand and model, e.g. Ping G425",
+    myClub: "My 7-iron", loftUnknown: "loft unknown", loftAria: "7-iron loft in degrees", loftUnit: "° loft",
+    ifKnown: "If you know it", ratherNot: "I'd rather not say",
+    noPattern: "No real pattern",
+    noPreference: "No preference", noStrongPreference: "No strong preference",
+    male: "Male", female: "Female", age: "Age", years: "years",
+    height: "Height, in the shoes you play in", heightCm: "Height in centimetres", heightFt: "Height, feet",
+    heightIn: "Height, inches",
+    changeLast: "Change my last answer",
+  },
+
+  session: {
+    noChange: "That agrees with what I had, so nothing changes.",
+    changes: (part: string, from: string, to: string) => `${part} changes from ${from} to ${to}.`,
+    stays: (part: string, to: string, cert: string, pct: string) => `${part} stays ${to}, now ${cert} (${pct}).`,
+    refitFailed: "I couldn't update your fit. Please try again.",
+    updatedRead: (summary: string) => `I've updated your Takomo Fit with your new answers. ${summary}`,
+    firstRead: (head: string, shaft: string, summary: string) => `Here's my first read: ${head} with a ${shaft} shaft. `
+      + `${summary} That's what your answers alone can tell me. Now let's measure, and you'll see it firm up.`,
+    brand: "Takomo Fit",
+    talkInstead: `Talk to ${N} instead`,
+    startOver: "Start over",
+    backToMeasuring: "Back to measuring",
+    firstReadBusy: "Putting your first read together",
+    changeAnswers: "Change my answers",
+    redo: "Redo", doNow: "Do it now",
+    expect: (part: string, a: string, b: string) => `I expect it to take your ${part} from ${a} to about ${b} sure.`,
+    updating: "Updating your Takomo Fit",
+    start: "Start", skipForNow: "Skip for now",
+    allDone: (did: boolean): string => (did ? "That's everything I'd measure at home. " : "No problem, we can measure later. "),
+    skipRest: "Skip the rest and see my Takomo Fit",
+    seeFull: "See my Takomo Fit",
+    soFar: "Your Takomo Fit so far", updatingShort: "· updating…",
+    closeCalls: (n: number) => `${n} to check`,
+    allSettled: "All settled",
+  },
+
+  result: {
+    notFound: "We couldn't find this fit. It may have expired.",
+    addFailed: "We couldn't add that measurement.",
+    startNew: "Start a new Takomo Fit",
+    loading: "Loading your Takomo Fit",
+    backToFit: "Back to my Takomo Fit",
+    kicker: "Your Takomo Fit",
+    buyStock: "Buy stock", orderCustom: "Order custom", returns: "30-day returns", madeToOrder: "Made to order",
+    stockChance: (p: string) => `Chance a stock set is what your swing calls for: ${p}`,
+    customTitle: "Your measurements call for a custom build",
+    stockTitle: "A stock set fits your swing",
+    toCheck: (n: number, list: string) => `${n === 1 ? "One thing" : `${n} things`} to check: ${list}.`,
+    allConfirmed: "Every part is confirmed.",
+    nextStep: (test: string) => `Next step: ${test}`,
+    whyEach: "Why each part",
+    settle: "Settle what's left to check",
+    settleIntro: "Ranked by how much each test would firm up your spec, worked out before you do it.",
+    expected: "expected",
+    more: "More measurements",
+    footer: (id: string, model: string) => `Fit ${id} · model ${model}`,
+    back: `Back to ${N}`,
+    runnerUp: "Runner-up:",
+    added: (title: string) => `${title} added`,
+    agrees: "That agrees with what we had, so your spec stays the same.",
+    orderOnTakomo: (name: string) => `Configure & buy ${name} on takomogolf.com`,
+    copySpec: "Copy my spec",
+    copiedSpec: "Spec copied",
+  },
+
+  compare: {
+    title: "Compare",
+    of5: (n: number) => `${n} of 5`,
+    notKnown: "Not known", yourCurrent: "Your current",
+    estimate: (v: string) => `${v} (your estimate)`,
+    loft: "7-iron loft", carry: "Carry",
+    yourVs: (name: string) => `Your 7-iron vs the ${name}`,
+    moreLoft: (d: string) => `Ours has ${d} more loft, so with the same swing it launches higher, lands softer and `
+      + "carries a little shorter. That's loft, not lost speed.",
+    lessLoft: (d: string) => `Ours has ${d} less loft, so with the same swing it flies lower and further.`,
+    sameLoft: "The lofts are about the same, so expect similar distance.",
+    yoursLonger: (loft: string) => "If your current 7-iron goes further, it probably has a stronger loft: many modern "
+      + `game-improvement 7-irons have several degrees less than our ${loft}. That's loft, not lost speed.`,
+    topTwo: "Top two heads",
+    rating: {
+      forgiveness: "Forgiveness", distance: "Distance", workability: "Workability", distance_control: "Distance control",
+    },
+    forgedFeel: "Forged feel", no: "No", offset: "Offset", builtFor: "Built for scores", yourCarry: "Your carry",
+    rightForYou: "Right for you",
+    rightNote: "“Right for you” is how often each head comes out on top across everything we're still unsure about.",
+    shaftsTitle: "Your shaft vs the runner-up",
+    flex: "Flex", weight: "Weight", material: "Material", launch: "Launch", suitsTempo: "Suits tempo", any: "any",
+    launchLevel: { low: "low", mid: "mid", high: "high" } as Record<string, string>,
+    tempoLevel: { smooth: "smooth", moderate: "moderate", quick: "quick", any: "any" } as Record<string, string>,
+    shaftLine: (model: string, launch?: string, tempo?: string) =>
+      `The ${model} ${[launch && `launches ${launch}`, tempo ? `suits ${tempo} tempos` : "suits any tempo"].filter(Boolean).join(", ")}.`,
+    stiffer: (name: string) => `The ${name} is stiffer: it would fly lower with less spin and feel firmer.`,
+    softer: (name: string) => `The ${name} is softer: it would launch higher, spin more and feel livelier.`,
+    heavier: (model: string, g: string) => `The ${model} is ${g} heavier, for a more controlled feel.`,
+    lighter: (model: string, g: string) => `The ${model} is ${g} lighter, for an easier feel.`,
+  },
+
+  whatIf: {
+    title: "What if…",
+    intro: "See how your spec would change if your swing or body were different.",
+    speed: "7-iron speed", height: "Height", flight: "Ball flight", tempo: "Tempo",
+    show: "Show me", running: "Re-running your fit", failed: "That didn't work. Please try again.",
+    same: "Your spec would stay the same.",
+    now: (v: string) => `(now ${v})`,
+  },
+
+  ask: {
+    title: `Ask ${N}`,
+    intro: "Answers come straight from the numbers behind your fit.",
+    whyHead: (name: string) => `Why the ${name}?`,
+    whyShaft: "Why this shaft?",
+    whyLie: (v: string) => `Why ${v.toLowerCase()} lie?`,
+    whyLength: (v: string) => `Why ${v.toLowerCase()} length?`,
+    grip: "How did you size my grip?",
+    stockCustom: "Stock or custom?",
+    next: "What should I do next?",
+    sure: (p: string) => `I'm ${p} sure.`,
+    alternative: (v: string, p: string) => `The alternative is ${v}, ${p} likely.`,
+    missesLie: (dir: Dir, upright: "left" | "right", flat: "left" | "right") =>
+      `You said your misses start ${dir === "both" ? "both ways" : dir}. A lie that's too upright for you starts shots `
+      + `${upright}; too flat, ${flat}. Swing path does the same thing, so only the ball-line test can tell whether `
+      + "it's the club or the swing.",
+    nextTest: (title: string, how: string) => `The ${title.toLowerCase()}. ${how}`,
+    improve: (part: string, a: string, b: string) => `It should take your ${part} from ${a} to about ${b} sure.`,
+    nothingElse: "Nothing else would change this fit. You're ready to order.",
+    rather: "Rather talk it through?",
+  },
+
+  voice: {
+    dropped: "The voice connection dropped.",
+    notOn: "The voice fitter isn't switched on for this server.",
+    mic: "We need microphone access to talk. Allow it in your browser settings and try again.",
+    failed: `We couldn't start ${N}. Please try again.`,
+    talking: `${N} is talking`, listening: "Listening…", connecting: "Connecting…", talkThrough: "Talk it through",
+    hint: "Ask why a part was chosen, what changes if you're taller or faster, or how two heads compare. Every answer "
+      + "comes from your fit, not guesswork.",
+    end: "End conversation", talk: `Talk to ${N}`,
+  },
+};
+
+export type Messages = typeof en;
+export default en;

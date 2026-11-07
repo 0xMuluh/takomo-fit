@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pocketfit"
+version = "0.1.0"
+description = "Takomo Pocket Fitter engine: evidence fusion with calibrated confidence on top of Takomo's fitting rules"
+requires-python = ">=3.10"
+# The ML stack is pinned to the versions artifacts/model.joblib was trained with; it does not unpickle on others.
+dependencies = [
+  "numpy==1.26.4",
+  "pandas==2.3.3",
+  "scikit-learn==1.5.1",
+  "scipy==1.13.1",
+  "joblib==1.4.2",
+  "fastapi==0.141.1",
+  "uvicorn[standard]==0.52.1",
+  "pydantic==2.13.4",
+  "httpx==0.28.1",
+  "pillow==12.3.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+takomo_fit = ["data/*.json", "data/*.csv", "LICENSE"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["slow: full-split validation runs"]

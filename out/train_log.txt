@@ -1,0 +1,16 @@
+trained pf-0.1.0-202611070225 in 24.7s
+dev: 3000 golfers in 61.3s
+{"spec_agreement_score": 87.96, "full_spec_exact_pct": 39.3, "component_pct": {"head": 95.0, "flex": 90.8, "material": 97.2, "shaft_model": 88.8, "length": 92.7, "lie": 58.3, "grip": 90.5, "purchase": 90.6, "handedness": 100.0}}
+  calibration head       said 0.875 right 0.872 ECE 0.0132
+  calibration flex       said 0.835 right 0.836 ECE 0.0068
+  calibration length     said 0.898 right 0.893 ECE 0.0088
+  calibration lie        said 0.494 right 0.490 ECE 0.0098
+  calibration grip       said 0.860 right 0.874 ECE 0.0145
+  calibration whole spec said 0.282 right 0.282 ECE 0.0079
+  ladder questionnaire    score 82.96 whole 21.8%
+  ladder +photos          score 83.42 whole 23.3%
+  ladder +swing video     score 84.34 whole 27.1%
+  ladder +home tests      score 84.61 whole 28.2%
+  ladder +launch monitor  score 87.96 whole 39.3%
+saved artifacts/model.joblib
+wrote 5000 test predictions to ../out/pocketfitter_takomo_test_predictions.csv
