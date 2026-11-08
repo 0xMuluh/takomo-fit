@@ -43,7 +43,7 @@ Takomo sells forged, premium golf clubs direct to golfers across 109 countries w
 
 ---
 
-<h2 id="-how-it-works">🏌️ Meet Ilmari: the conversational fitter</h2>
+<h2 id="-how-it-works">🏌️ Meet Ilmari: the fitter in your pocket</h2>
 
 <div align="center">
   <img src="docs/assets/takomo_stickman.svg" width="64" height="64" align="right" />
