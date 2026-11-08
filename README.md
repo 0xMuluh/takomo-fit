@@ -21,8 +21,8 @@
   <a href="https://takomo-fitter.web.app/"><strong>Launch Live App »</strong></a> ·
   <a href="#-quickstart">Quickstart</a> ·
   <a href="#-the-solution-how-it-works">How It Works</a> ·
-  <a href="#-benchmark--calibration-results">Benchmark Proof</a> ·
-  <a href="docs/README.md">Documentation Hub</a>
+  <a href="#-benchmark--calibration-results">Benchmark</a> ·
+  <a href="docs/README.md">Docs</a>
 </p>
 
 </div>
