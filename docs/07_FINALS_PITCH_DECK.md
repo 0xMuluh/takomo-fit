@@ -25,8 +25,12 @@
 
 ## Slide 1 — Title & executive proposition
 * **Visual:** Header badge with Takomo Fit identity, stickman golfer, and live app link.
-* **Headline:** Takomo Pocket Fitter — The Fitter in Your Pocket
-* **Speaker notes:** Takomo is a D2C success story (€70M+ revenue across 109 countries), with over 25% of all iron sales flowing through the online fitter. But today's online fitting is a questionnaire. Our goal is to bring the expertise of a professional master fitter into the golfer's pocket with on-device computer vision and conversational AI.
+* **Headline:** Takomo Pocket Fitter — Ilmari: the fitter in your pocket
+* **Bullets:**
+  * ElevenLabs multimodal voice
+  * Zero-print smartphone vision
+  * 87.91 score · 0 unbuildable specs
+* **Speaker notes:** Takomo sells forged, premium golf clubs direct-to-consumer across 109 countries. Over 25% of all iron sales flow through the online fitter. 5 mins with a master club fitter on any smartphone with on-device computer vision and conversational AI.
 
 ---
 
@@ -82,7 +86,7 @@
 | Benchmark metric | Questionnaire baseline (B1) | Evidence substitution (B2) | Takomo Pocket Fitter |
 |---|---|---|---|
 | **Spec agreement score** | 77.10 / 100 | 83.60 / 100 | **87.91 / 100** |
-| **Full-spec exact match** | 13.7% | 25.3% | **39.0%** (~3x Baseline) |
+| **Full-spec exact match** | 13.7% | 25.3% | **39.0%** (~3x baseline) |
 | **Unbuildable specs** | — | — | **0 (100% Feasible)** |
 | **Component lie accuracy** | ~41.0% | — | **58.3%** |
 | **Shaft flex accuracy** | — | — | **90.8%** |
@@ -100,19 +104,20 @@
 
 ---
 
-## Slide 9 — Production pilot & rollout roadmap
-* **Visual:** 4-phase deployment timeline (Canary $\to$ Multilingual $\to$ Storefront $\to$ Full Bag).
+## Slide 9 — From canary to storefront
+* **Visual:** 4-phase rollout columns (canary pilot $\to$ European locales $\to$ headless Shopify $\to$ full bag suite).
 * **Talking points:**
-  * Phase 1 A/B canary test on 5% of web traffic.
-  * Zero-friction headless Shopify cart injection prefilling iron specs.
-  * Expansion to drivers, fairway woods, and wedges.
+  * Phase 1 A/B canary test on 5% of web traffic to verify 0 unbuildable specs.
+  * Native voice and text engines in FI, SV, DE driving conversion parity.
+  * Zero-friction headless Shopify cart injection pre-filling custom build specs.
+  * Expansion to drivers, fairway woods, and wedges to lift average order value.
 
 ---
 
-## Slide 10 — Live system demonstration
-* **Visual:** Live interactive screen on mobile and desktop.
-* **Action:** Live demo of conversational voice fit, mobile card calibration, and instant confidence breakdown.
-* **Links:** [https://takomo-fitter.web.app](https://takomo-fitter.web.app) · [GitHub Repository](https://github.com/0xMuluh/takomo-fit)
+## Slide 10 — Try Takomo Fit right now
+* **Visual:** Scannable Takomo stickman QR code linked to `takomo-fitter.web.app` on the left; 4 core commercial pillars for Takomo on the right.
+* **Action:** Direct live test of the conversational voice fitter, camera scaling, and instant confidence breakdown.
+* **Links:** [https://takomo-fitter.web.app](https://takomo-fitter.web.app) · [GitHub repository](https://github.com/0xMuluh/takomo-fit)
 
 ---
 
