@@ -1,17 +1,13 @@
 <div align="center">
 
-<img src="docs/assets/takomo-logo-dark.png" alt="Takomo Golf" width="280" />
+<a href="https://takomo-fitter.web.app/">
+  <img src="docs/assets/takomo_fit_header.png" alt="Takomo Fit" width="440" />
+</a>
 
 <br/><br/>
 
-<a href="https://takomo-fitter.web.app/">
-  <img src="docs/assets/takomo_stickman.svg" alt="Ilmari — Takomo Stickman Pro-Fitter" width="84" height="84" />
-</a>
-
-# Takomo Pocket Fitter
-### The AI Pro-Fitter in Your Pocket
-
-**Multimodal Voice Consultation · Zero-Print Smartphone Vision · Calibrated Bayesian Fitting**
+**The AI Pro-Fitter in Your Pocket**  
+*Multimodal Voice Consultation · Zero-Print Smartphone Vision · Calibrated Bayesian Fitting*
 
 [![CI](https://github.com/0xMuluh/takomo-fit/actions/workflows/ci.yml/badge.svg)](https://github.com/0xMuluh/takomo-fit/actions/workflows/ci.yml)
 [![Deploy to Cloud Run](https://github.com/0xMuluh/takomo-fit/actions/workflows/deploy.yml/badge.svg)](https://github.com/0xMuluh/takomo-fit/actions/workflows/deploy.yml)
