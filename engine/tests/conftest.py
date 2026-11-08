@@ -7,7 +7,8 @@ from pocketfit.evidence import load_split
 from pocketfit.model import FitModel
 
 ENGINE = Path(__file__).resolve().parents[1]
-DATA = Path(os.environ.get("PF_DATA_DIR", ENGINE.parent / "lab" / "data"))
+DATA_DEFAULT = ENGINE / "tests" / "data" if (ENGINE / "tests" / "data").exists() else ENGINE.parent / "lab" / "data"
+DATA = Path(os.environ.get("PF_DATA_DIR", DATA_DEFAULT))
 ARTIFACT = Path(os.environ.get("PF_MODEL_PATH", ENGINE / "artifacts" / "model.joblib"))
 
 
