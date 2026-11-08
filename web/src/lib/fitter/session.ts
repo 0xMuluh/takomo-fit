@@ -7,7 +7,7 @@ import {
   toQuestionnaire,
   type AnswerParams,
 } from "./answers";
-import { changesText, fitBrief, KIND_LABEL, measurementGuide, suggestedKinds, type Kind } from "./describe";
+import { changesText, KIND_LABEL, measurementGuide, suggestedKinds, type Kind } from "./describe";
 import { evidenceKeys, evidenceKeysOf } from "./evidence";
 import { fitterTools, type ToolState } from "./tools";
 import { measuredNote } from "./notes";
@@ -70,7 +70,7 @@ export class FitterSession {
       const had = !!this.s.fit;
       const { fit, changes } = await this.refit();
       if (fit && !had) {
-        out.push(`Fit ready (7/7 core answers complete). Stop asking interview questions and give your first read now, then offer optional measurements once as a group (if they decline or ask for the recommendation directly, skip all measurements and give the verdict):\n${fitBrief(fit, this.done(), this.al, next)}`);
+        out.push(`Fit ready (7/7 core answers complete). Stop asking interview questions. Call get_fit to get your first read spec, give the first read in two sentences, then offer optional measurements once as a group (if they decline or ask for the recommendation directly, skip all measurements and give the verdict).`);
       } else if (fit) {
         out.push(`Fit updated. ${changesText(changes, fit, this.al)}`);
       }
@@ -115,7 +115,7 @@ export class FitterSession {
           + "sentence, then carry on with the interview.",
       };
     }
-    if (!had) return { note, message: what + `Fit ready. Give your first read:\n${fitBrief(fit, this.done(), this.al, this.s.answers)}` };
+    if (!had) return { note, message: what + "Fit ready. Call get_fit to get your first read spec, then give your first read." };
     const next = suggestedKinds(fit, this.done())[0];
     return {
       note,

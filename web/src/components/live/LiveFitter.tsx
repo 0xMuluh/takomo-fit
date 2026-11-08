@@ -136,7 +136,7 @@ function Session() {
       if (now - lastCueAt.current < 1500) return;
       lastCueAt.current = now;
       lastCueText.current = cue;
-      send(cue);
+      conv.sendContextualUpdate(cue);
       return;
     }
     if (conv.isSpeaking) return;
@@ -144,7 +144,7 @@ function Session() {
     if (now - lastCueAt.current < 15000 || cue === lastCueText.current) return;
     lastCueAt.current = now;
     lastCueText.current = cue;
-    send(cue);
+    conv.sendContextualUpdate(cue);
   };
 
   useEffect(() => {
@@ -175,14 +175,18 @@ function Session() {
       const r = await session.current?.addEvidence(kind, ev);
       if (!r) return;
       addLine({ role: "app", text: r.note });
-      send(r.message);
+      conv.sendContextualUpdate(r.message);
     } catch {
       setErr(l.t.live.measuredNoUpdate);
     }
   };
 
   const closeMeasurement = () => {
-    if (measuring) send(`[app] The golfer closed the ${KIND_LABEL[measuring]} without finishing it.`);
+    if (measuring) {
+      conv.sendContextualUpdate(
+        `[app] The golfer closed the ${KIND_LABEL[measuring]} without finishing it. Respect their decision and move forward with the fitting.`,
+      );
+    }
     setMeasuring(undefined);
     setAttached(undefined);
   };
