@@ -1,37 +1,59 @@
-# API reference
+<div align="center">
+
+<a href="../README.md">
+  <img alt="Takomo Fit" src="assets/takomo_fit_header.png" height="42">
+</a>
+
+<p align="center">
+  <strong>The AI Pro-Fitter in Your Pocket</strong><br>
+  <em>Multimodal Voice Consultation · Zero-Print Smartphone Vision · Calibrated Bayesian Fitting</em>
+</p>
+
+<p align="center">
+  <a href="../README.md">« Home</a> ·
+  <a href="README.md">Docs Index</a> ·
+  <a href="https://takomo-fitter.web.app/">Live App</a> ·
+  <a href="https://github.com/0xMuluh/takomo-fit">GitHub</a>
+</p>
+
+</div>
+
+---
+
+# API Reference & Integration Guide
 
 **Contracts:** `pocket-fitter/engine/src/pocketfit/schemas.py`, `api.py`  
-**Typical proxy:** `https://takomo-fitter.web.app/api/pf` → FastAPI
+**Base URL / Proxy:** `https://takomo-fitter.web.app/api/pf` $\to$ FastAPI Engine
 
-Field names below match Pydantic models. Do not invent flat request shapes.
+All field definitions match Pydantic strict schemas.
 
 ---
 
-## 1. Public endpoints
+## 1. Core Endpoints
 
-| Method | Path | Role |
+| Method | Endpoint | Description |
 |---|---|---|
-| GET | `/health` | Liveness / model loaded |
-| GET | `/v1/model` | Model version metadata |
-| GET | `/v1/catalog` | Product catalog (`lang`) |
-| POST | `/v1/fits` | Create fit (`FitRequest` → `FitResponse`) |
-| GET | `/v1/fits/{fit_id}` | Read fit; optional `lang` / `units` |
-| POST | `/v1/fits/{fit_id}/evidence` | Merge `Evidence`, recompute |
-| POST | `/v1/fits/{fit_id}/what-if` | `Overrides` → what-if response |
-| GET | `/v1/voice/session` | ElevenLabs signed URL (`fit_id` optional) |
-| POST | `/v1/handoff` | Create phone handoff code |
-| GET | `/v1/handoff/{code}` | Phone opens session |
-| POST | `/v1/handoff/{code}` | Cue and/or evidence from phone |
-| GET | `/v1/handoff/{code}/events` | Desktop poll (`after`) |
-| POST | `/v1/launch-monitor/photo` | Screen photo → readings |
-| POST | `/v1/launch-monitor/video` | Frame set → readings |
-| POST | `/v1/launch-monitor/report` | TrackMan-style shared URL |
+| `GET` | `/health` | Service health status and loaded model artifact metadata |
+| `GET` | `/v1/model` | Version identifier and training calibration metrics |
+| `GET` | `/v1/catalog` | Full Takomo product catalog specifications (`lang` supported) |
+| `POST` | `/v1/fits` | Initial fit generation (`FitRequest` $\to$ `FitResponse`) |
+| `GET` | `/v1/fits/{fit_id}` | Retrieve fit session state (`lang`, `units` params) |
+| `POST` | `/v1/fits/{fit_id}/evidence` | Progressively ingest multimodal `Evidence` and update fit |
+| `POST` | `/v1/fits/{fit_id}/what-if` | Evaluate hypothetical parameter `Overrides` |
+| `GET` | `/v1/voice/session` | Request signed ElevenLabs WebSocket credentials |
+| `POST` | `/v1/handoff` | Generate short-lived desktop $\to$ mobile handoff session |
+| `GET` | `/v1/handoff/{code}` | Mobile client handshake and initialization |
+| `POST` | `/v1/handoff/{code}` | Mobile measurement ingestion and UI synchronization cues |
+| `GET` | `/v1/handoff/{code}/events` | Long-poll / SSE event streaming for desktop client |
+| `POST` | `/v1/launch-monitor/photo` | OCR parsing of launch monitor screen snapshots |
+| `POST` | `/v1/launch-monitor/video` | Launch monitor video extraction |
+| `POST` | `/v1/launch-monitor/report` | Ingest external TrackMan / FlightScope shared report URL |
 
-Agent tools (secret header): `POST /v1/agent/summary|explain|what-if|next-test|compare-heads`.
+*Agent Endpoints (Protected by `X-Agent-Secret`):* `POST /v1/agent/summary`, `explain`, `what-if`, `next-test`, `compare-heads`.
 
 ---
 
-## 2. `POST /v1/fits` — `FitRequest`
+## 2. Fit Initiation — `POST /v1/fits`
 
 ```json
 {
@@ -56,19 +78,11 @@ Agent tools (secret header): `POST /v1/agent/summary|explain|what-if|next-test|c
 }
 ```
 
-Require `speed_mph` or `carry_yd`. Nested `evidence` / `overrides` / `locale` as in schemas.
-
-### `FitResponse` (shape)
-
-- `fit_id`, `model_version`
-- `spec`: head, `Shaft`, `length_in`, `lie_deg`, grip, handedness, purchase
-- `runner_up_head`, `whole_spec_confidence`
-- `components[]`: part, value, confidence, alternative*, close_call, summary, reasons, effect*, evidence[]
-- `stock_advice`, `estimates`, `probabilities`, `next_tests`, `warnings`
+*Requirements:* At least one of `speed_mph` or `carry_yd` must be supplied.
 
 ---
 
-## 3. `POST /v1/fits/{id}/evidence` — `Evidence`
+## 3. Multimodal Evidence Ingestion — `POST /v1/fits/{id}/evidence`
 
 ```json
 {
@@ -101,22 +115,29 @@ Require `speed_mph` or `carry_yd`. Nested `evidence` / `overrides` / `locale` as
 }
 ```
 
-`ball_line_tilts_deg` and `impact_spray_offsets_mm` require min length 3 when present. Launch monitor needs ≥3 `own_7i` shots or `own_7i_summary` with speed or carry.
+---
+
+## 4. Conversational Voice Authentication — `GET /v1/voice/session`
+
+* Returns ephemeral HMAC signature: `{"signed_url": "...", "fit_id": "..."}`.
+* ElevenLabs API keys remain strictly quarantined in engine environment variables.
+* Returns `503 Service Unavailable` if voice keys are unconfigured; `429 Too Many Requests` on rate limiting.
 
 ---
 
-## 4. Voice — `GET /v1/voice/session`
+## 5. Headless Shopify Cart Integration (Storefront Roadmap)
 
-Not POST. Response: `{ "signed_url": "…", "fit_id": "…" }`. 503 if ElevenLabs env unset; 429 if over rate limit.
+Planned production handoff serializes the finalized `FitResponse.spec` into custom line-item properties for headless Shopify Cart API ingestion:
+* `_fit_id`: Cryptographic fit session identifier
+* `model`: e.g. "101 MKII"
+* `shaft`: e.g. "KBS Tour Lite Stiff"
+* `length`: e.g. "+0.5 in"
+* `lie`: e.g. "2° Upright"
+* `grip`: e.g. "Lamkin Crossline Midsize"
+* `order_type`: "Stock" or "Custom"
 
 ---
 
-## 5. Client tools (browser ↔ ElevenLabs)
-
-Configured on the agent (names may evolve with `setup_voice_agent.py`). Typical pattern: tools such as starting a measurement kind (`body` | `hand` | `swing` | `ball_line`) execute in the browser; explanations can call engine agent routes or local fit state.
-
----
-
-## 6. Shopify cart
-
-**Not implemented** in this repo (CDN URLs for product images only). Planned storefront work: map `FitResponse.spec` to Shopify line-item properties (`_fit_id`, model, shaft, length, lie, grip, order type). Do not describe as shipped.
+<div align="center">
+  <sub>Takomo Pocket Fitter · Built for the <strong>Since AI Hackathon 2026</strong> in partnership with <strong>Takomo Golf</strong></sub>
+</div>

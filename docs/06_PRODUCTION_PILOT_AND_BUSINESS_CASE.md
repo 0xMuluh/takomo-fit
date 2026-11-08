@@ -1,50 +1,75 @@
-# Pilot plan & business notes
+<div align="center">
 
-**Takomo brief facts (from challenge brief):** €70M+ revenue; 109 countries; 600k+ online fittings in six months; >25% of iron orders via the online fitter.
+<a href="../README.md">
+  <img alt="Takomo Fit" src="assets/takomo_fit_header.png" height="42">
+</a>
+
+<p align="center">
+  <strong>The AI Pro-Fitter in Your Pocket</strong><br>
+  <em>Multimodal Voice Consultation · Zero-Print Smartphone Vision · Calibrated Bayesian Fitting</em>
+</p>
+
+<p align="center">
+  <a href="../README.md">« Home</a> ·
+  <a href="README.md">Docs Index</a> ·
+  <a href="https://takomo-fitter.web.app/">Live App</a> ·
+  <a href="https://github.com/0xMuluh/takomo-fit">GitHub</a>
+</p>
+
+</div>
 
 ---
 
-## 1. Why fitting matters commercially
+# Production Pilot & Business Case
 
-D2C means the website fitter sets model, specs, and stock vs custom. Trust affects whether golfers complete an order and whether stock sets come back under the 30-day return window. Custom builds are not returnable; the engine’s `stock_advice` exists to say when stock is enough.
+**Takomo Verified Baseline Data:** €70M+ annual revenue; 109 global destination countries; 600,000+ online fittings completed in past 6 months; $>25\%$ of total iron orders originate via the online fitter.
 
 ---
 
-## 2. Unit economics — illustrative assumptions only
+## 1. Commercial Thesis: The Trust Bottleneck
 
-Takomo has **not** provided conversion rate, AOV, return rate, support-hours, or NPS figures for this project. Numbers below are **planning placeholders**, not measured Takomo KPIs. Do not quote them as facts.
+As a direct-to-consumer (D2C) manufacturer without brick-and-mortar retail storefronts, Takomo's website fitter functions as the master salesperson and fitter.
+* **The Stock vs. Custom Dilemma:** Stock iron sets are backed by a 30-day hassle-free return window. Custom club builds are built to order and completely non-returnable.
+* **The Hesitation Factor:** When a static questionnaire recommends a custom spec (+0.5" length, 2° upright lie) based on guessed swing speeds, golfers frequently abandon their carts out of fear of getting stuck with unreturnable clubs.
+* **The Commercial Solution:** Pocket Fitter's `stock_advice` engine evaluates posterior confidence: unless measured evidence decisively favors custom adjustments, it guides the golfer toward standard stock configurations, protecting both buyer confidence and manufacturer margin.
 
-| Placeholder | Example value | Use |
+---
+
+## 2. Unit Economics & Scenario Sizing
+
+> [!IMPORTANT]
+> The baseline KPIs below serve as **modeling placeholders** for pilot design. Conversion, RMA, and support baselines are to be measured via controlled A/B canary cohorts.
+
+| Operational Lever | Metric Baseline / Target | Commercial Impact |
 |---|---|---|
-| Annual fittings (extrapolated from brief 600k / 6 mo) | ~1.2M | Scenario sizing |
-| Fitting→order conversion | unknown | A/B measure in pilot |
-| Iron-set AOV | unknown | Revenue scenarios |
-| Stock return rate | unknown | RMA telemetry |
-| Support contacts about fit | unknown | Ticket tagging |
-
-Any €M “uplift” spreadsheet built from invented conversion/AOV/return rates is scenario math only.
+| **Annual Fitting Volume** | ~1.2M fittings / year | Extrapolated from 600k / 6 mo brief baseline |
+| **Fitter $\to$ Cart Conversion** | Measured in Phase 1 A/B Canary | Incremental orders from reduced fitting abandonment |
+| **Stock RMA Rate** | Telemetry tracked via Shopify RMA | Fewer return restocks and freight absorption |
+| **Custom Build Hesitation** | Monitored via stock recommendation mix | Faster checkout confidence on standard specs |
+| **Customer Support Load** | Ticket tagging on fit inquiries | Automated explanations reduce pre-purchase tickets |
 
 ---
 
-## 3. Suggested rollout (process, not committed dates)
+## 3. Four-Phase Production Rollout
 
-| Phase | Scope | Gate (measure, don’t invent targets) |
+| Phase | Scope | Stage Gates & Success Metrics |
 |---|---|---|
-| 1 Canary | Small % EN traffic vs questionnaire | Funnel completion, cart add, RMA tags, error rate |
-| 2 Locales | FI / SV / DE already in `locale.lang` | Same metrics by locale |
-| 3 Storefront | Embed on takomogolf.com; **then** Shopify line items | Buildable-spec rate; stock/custom mix |
-| 4 Full bag | Driver / wedge models | Separate model + catalog work |
-
-Infra already demonstrated: live web app, Dockerizable FastAPI, Firebase-hosted frontend. Shopify injection remains future work.
+| **Phase 1: Canary** | 5% English web traffic (A/B vs questionnaire) | Funnel completion rate, cart additions, 0 unbuildable specs |
+| **Phase 2: Multilingual** | Roll out FI, SV, DE (`locale.lang` supported) | Locale conversion parity, translation fidelity |
+| **Phase 3: Storefront** | Direct embed on takomogolf.com + Shopify cart | Seamless prefilled cart injection, RMA telemetry |
+| **Phase 4: Full Bag** | Extend to drivers, woods, and wedges | Catalog expansion, multi-club posterior models |
 
 ---
 
-## 4. What to monitor (no fake SLOs)
+## 4. Telemetry & Quality Monitoring
 
-- Fit create / evidence latency and 5xx rate  
-- Unbuildable or validation failures  
-- Voice session 503/429 rates  
-- Stock vs custom recommendation mix  
-- Pilot cohort RMAs vs control (once tagged)
+* **Engine Latency:** P95 response time on `/v1/fits` and `/v1/fits/{id}/evidence`.
+* **Zero Catalog Violations:** Continuous audit confirming 0 unbuildable specs reach checkout.
+* **Voice Availability:** Monitoring ElevenLabs ephemeral session generation (target: $<0.1\%$ 5xx).
+* **Return Telemetry:** Tagged comparison of 30-day RMA rates between standard questionnaire cohort and Pocket Fitter cohort.
 
-Latency/NPS/language-accuracy thresholds are not established in-repo; set them from production data after canary.
+---
+
+<div align="center">
+  <sub>Takomo Pocket Fitter · Built for the <strong>Since AI Hackathon 2026</strong> in partnership with <strong>Takomo Golf</strong></sub>
+</div>

@@ -1,62 +1,103 @@
-# Computer vision & biomechanics (client)
+<div align="center">
 
-**Code:** `pocket-fitter/web/src/lib/vision/` · capture UI under `web/src/components/capture/`  
-Pose / hands / card / tempo / ball-line geometry run in the browser (WASM). Frames for those flows are not uploaded as video.
+<a href="../README.md">
+  <img alt="Takomo Fit" src="assets/takomo_fit_header.png" height="42">
+</a>
+
+<p align="center">
+  <strong>The AI Pro-Fitter in Your Pocket</strong><br>
+  <em>Multimodal Voice Consultation · Zero-Print Smartphone Vision · Calibrated Bayesian Fitting</em>
+</p>
+
+<p align="center">
+  <a href="../README.md">« Home</a> ·
+  <a href="README.md">Docs Index</a> ·
+  <a href="https://takomo-fitter.web.app/">Live App</a> ·
+  <a href="https://github.com/0xMuluh/takomo-fit">GitHub</a>
+</p>
+
+</div>
 
 ---
 
-## 1. Card scale (hand)
+# Computer Vision & Biomechanics Pipeline
 
-Lab starter kit used a printed A4 measurement sheet. The app scales hands with any **ISO/IEC 7810 ID-1** card (`card.ts`): 85.60 mm × 53.98 mm. The UI supplies a card box; `fitCard` snaps edges and yields mm/px (rejects bad skew).
+**Code Modules:** `pocket-fitter/web/src/lib/vision/` · Capture UI: `web/src/components/capture/`  
+**Execution Runtime:** On-device WebAssembly (MediaPipe WASM + WebGL)
 
-\[
-s = \frac{85.60\,\mathrm{mm}}{w_{\mathrm{card,px}}}
-\]
+All computer vision routines—including full-body pose estimation, hand landmark tracking, card edge extraction, swing tempo detection, and 4-point impact geometry—execute strictly on the client device. Volatile camera frames never leave the browser.
 
 ---
 
-## 2. Hand → grip
+## Biomechanics & Measurement HUD
 
-`hand.ts`: MediaPipe Hands landmarks wrist → middle fingertip; length in cm after card scale + crease offset.
+<div align="center">
+  <img src="assets/golfer_biomechanics_schematic.png" alt="Golfer Biomechanics Schematic" width="700">
+  <p><em>Real-time on-device landmark tracking, card-calibrated hand scaling, and 4-point impact geometry</em></p>
+</div>
 
-Engine grip mapping (`GLOVE_EDGES_CM` / `grip_by_glove_size`), not ad-hoc 17.5 / 19.5 bands:
+---
 
-| Hand length (cm) | Glove bin | Grip |
+## 1. Zero-Print Hand Calibration via ISO/IEC 7810 ID-1
+
+Conventional online fitters either demand printable calibration sheets or rely entirely on inaccurate self-reported glove sizes. Pocket Fitter utilizes any standard credit, debit, or ID card (ISO/IEC 7810 ID-1 standard: $85.60\text{ mm} \times 53.98\text{ mm}$) directly in the browser (`card.ts`):
+
+$$s = \frac{85.60\,\mathrm{mm}}{w_{\mathrm{card,px}}}$$
+
+The camera interface renders a precision guide box. `fitCard` performs edge snap verification and validates aspect ratios to discard severe perspective skew before passing scale factors to hand tracking.
+
+---
+
+## 2. Hand Span Landmark Extraction & Grip Sizing
+
+`hand.ts` utilizes MediaPipe Hands landmarks to measure the precise linear Euclidean distance from the distal wrist crease to the tip of the third (middle) digit.
+
+Hand length is mapped directly to Takomo manufacturing glove bins and factory grip installations:
+
+| Hand Length ($\text{cm}$) | Takomo Glove Size | Installed Grip Size |
 |---|---|---|
-| below 16.8 | XS | standard |
-| 16.8–17.8 | S | standard |
-| 17.8–18.59 | M | standard |
-| 18.59–19.4 | M/L | midsize |
-| 19.4–20.22 | L | midsize |
-| 20.22 and up | XL | oversize |
+| $< 16.80$ | XS | Standard |
+| $16.80 \le L < 17.80$ | S | Standard |
+| $17.80 \le L < 18.59$ | M | Standard |
+| $18.59 \le L < 19.40$ | M/L | Midsize |
+| $19.40 \le L < 20.22$ | L | Midsize |
+| $\ge 20.22$ | XL | Oversize |
 
-(Bins are half-open at the upper edge, matching `np.digitize` on `GLOVE_EDGES_CM`.)
-
-API field: `Evidence.hand_photo` → `HandPhoto { method, hand_length_cm, finger_length_cm? }`.
+* **Engine Evidence Contract:** `Evidence.hand_photo` $\to$ `HandPhoto { method, hand_length_cm, finger_length_cm? }`.
 
 ---
 
-## 3. Body height & wrist-to-floor
+## 3. Pose Analysis: Stature & Wrist-to-Floor Ratio
 
-`body.ts` + `BodyPhoto` schema:
+`body.ts` extracts biomechanic proportions via MediaPipe Pose:
+* `method="ratio"`: Computes wrist-to-floor as an empirical proportion of total height, anchoring to stated stature.
+* `method="reference"`: Uses reference objects to derive absolute stature and wrist-to-floor dimensions simultaneously.
 
-- `method="ratio"`: wrist-to-floor as fraction of height; stated height sets scale.
-- `method="reference"`: reference object can also yield absolute height.
-
-Stance quality (`good` / `poor`) is passed through. Handoff can stream coaching cues while pose runs on the phone.
-
----
-
-## 4. Swing tempo
-
-`SwingVideo`: `fps`, `backswing_s`, `downswing_s`, optional `clubhead_speed_mph`. Client timing from lead-wrist track on phone video; engine fuses with questionnaire tempo when present.
+Stance alignment is evaluated for posture quality (`good` vs `poor`), and real-time audio/visual cues guide golfer positioning during cross-device mobile handoff sessions.
 
 ---
 
-## 5. Ball-line lie (manual 4-point tap)
+## 4. Optical Swing Tempo Extraction
 
-Not Canny / Hough. UI (`BallLineCapture.tsx`): golfer photographs the face and taps four points — line bottom, line top, heel, toe. `tiltDeg` in `ballLine.ts` returns degrees (toe-up positive), same geometry as the lab ball-line helper.
+`SwingVideo` analyzes continuous lead-wrist trajectories from high-frame-rate mobile video:
+* Automatically identifies takeaway, top of backswing (zero velocity transition), and impact.
+* Extracts `backswing_s` and `downswing_s` duration.
+* Determines the kinetic tempo ratio ($3:1$ classic vs $2:1$ quick), fusing optical measurements with questionnaire self-reports.
 
-Need ≥3 tilts → `Evidence.ball_line_tilts_deg: number[]`.
+---
 
-Static height/WTF lie is a prior; ball-line / TrackMan toe-up supply direct delivery evidence. Dev **lie exact = 58.3%** (`model.json`). B1 questionnaire lie match ~41% (START_HERE).
+## 5. Ball-Line Impact Geometry (Manual 4-Point Tap)
+
+To avoid brittle edge-detection artifacts on dirty clubfaces, Pocket Fitter uses a guided 4-point impact registration protocol (`BallLineCapture.tsx`):
+1. Golfer marks an equatorial line on a golf ball and strikes a minimum of 3 shots.
+2. Golfer snaps a macro photo of the iron face.
+3. Golfer taps 4 registration points: line bottom, line top, heel marker, toe marker.
+4. `tiltDeg` in `ballLine.ts` calculates precise relative delivery angle (toe-up positive).
+
+Direct delivery evidence lifts component lie accuracy to **58.3%** on the development benchmark (vs ~41% for questionnaire baselines).
+
+---
+
+<div align="center">
+  <sub>Takomo Pocket Fitter · Built for the <strong>Since AI Hackathon 2026</strong> in partnership with <strong>Takomo Golf</strong></sub>
+</div>

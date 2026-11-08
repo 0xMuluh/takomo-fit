@@ -1,4 +1,26 @@
-# Since AI Hackathon 2026 — submission fields
+<div align="center">
+
+<a href="../README.md">
+  <img alt="Takomo Fit" src="assets/takomo_fit_header.png" height="42">
+</a>
+
+<p align="center">
+  <strong>The AI Pro-Fitter in Your Pocket</strong><br>
+  <em>Multimodal Voice Consultation · Zero-Print Smartphone Vision · Calibrated Bayesian Fitting</em>
+</p>
+
+<p align="center">
+  <a href="../README.md">« Home</a> ·
+  <a href="README.md">Docs Index</a> ·
+  <a href="https://takomo-fitter.web.app/">Live App</a> ·
+  <a href="https://github.com/0xMuluh/takomo-fit">GitHub</a>
+</p>
+
+</div>
+
+---
+
+# Hackathon Submission Portal Entry
 
 **Challenge:** The Fitter in Your Pocket · Takomo Golf  
 **Live app:** [https://takomo-fitter.web.app/](https://takomo-fitter.web.app/)  
@@ -69,11 +91,11 @@ Next.js, FastAPI, MediaPipe, ElevenLabs, Scikit-learn, TypeScript, Python, Docke
 
 | Field | Path | Notes |
 |---|---|---|
-| Source | repo / zip excluding `node_modules`, `.venv` | |
-| Demo video | — | Record walkthrough; do not invent a URL |
-| Pitch deck | `docs/presentation/Takomo_Pocket_Fitter_Finals.pptx` | Regenerate from `generate_deck.py` if needed |
-| Supporting doc | `docs/01_ONE_PAGE_EXECUTIVE_SUMMARY.md` | |
-| Test predictions | `docs/test_predictions/takomo_test_predictions.csv` | Lab `data/test` |
+| Source | repo / zip excluding `node_modules`, `.venv` | Clean GitHub repository |
+| Demo video | — | Walkthrough recording (optional) |
+| Pitch deck | [Finals Pitch Deck (PPTX)](presentation/Takomo_Pocket_Fitter_Finals.pptx) | Regenerate from `generate_deck.py` if needed |
+| Supporting doc | [Executive Summary (1-Pager)](01_ONE_PAGE_EXECUTIVE_SUMMARY.md) | Official 1-page writeup |
+| Test predictions | [Benchmark Test Predictions (CSV)](test_predictions/takomo_test_predictions.csv) | Lab `data/test` (5,000 unlabelled) |
 
 ---
 
@@ -81,3 +103,9 @@ Next.js, FastAPI, MediaPipe, ElevenLabs, Scikit-learn, TypeScript, Python, Docke
 
 - **ElevenLabs:** `GET /v1/voice/session` returns a signed URL; browser opens the conversation; client tools drive UI measurements.
 - **Firebase Hosting:** `https://takomo-fitter.web.app/`.
+
+---
+
+<div align="center">
+  <sub>Takomo Pocket Fitter · Built for the <strong>Since AI Hackathon 2026</strong> in partnership with <strong>Takomo Golf</strong></sub>
+</div>

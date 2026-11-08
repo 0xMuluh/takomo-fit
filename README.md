@@ -234,16 +234,17 @@ This launches the FastAPI engine, Next.js web application, and Caddy with automa
 
 All technical documents, benchmark datasets, and pitch deliverables are hosted in [`docs/`](docs/):
 
-* [**00_HACKATHON_SUBMISSION.md**](docs/00_HACKATHON_SUBMISSION.md): Official submission portal fields (Tagline, About, Tech stack, links).
-* [**01_ONE_PAGE_EXECUTIVE_SUMMARY.md**](docs/01_ONE_PAGE_EXECUTIVE_SUMMARY.md): Required 1-page executive writeup (Slide 16 of Challenge Brief).
-* [**02_ARCHITECTURE_AND_SYSTEM_SPEC.md**](docs/02_ARCHITECTURE_AND_SYSTEM_SPEC.md): Complete engineering architecture and zero-egress protocol.
-* [**03_FITTING_ENGINE_MATHEMATICS_AND_CALIBRATION.md**](docs/03_FITTING_ENGINE_MATHEMATICS_AND_CALIBRATION.md): Linear-Gaussian conjugate math, ECE proofs, and EVOI formulations.
-* [**04_COMPUTER_VISION_AND_BIOMECHANICS.md**](docs/04_COMPUTER_VISION_AND_BIOMECHANICS.md): ISO card geometry, MediaPipe edge vision, and ball-line impact analysis.
-* [**05_API_REFERENCE_AND_INTEGRATION.md**](docs/05_API_REFERENCE_AND_INTEGRATION.md): OpenAPI endpoint specifications and headless Shopify cart injection.
-* [**06_PRODUCTION_PILOT_AND_BUSINESS_CASE.md**](docs/06_PRODUCTION_PILOT_AND_BUSINESS_CASE.md): Financial model (+€3.8M–€7.4M/yr net gain) and 4-phase rollout plan.
-* [**07_FINALS_PITCH_DECK.md**](docs/07_FINALS_PITCH_DECK.md): 10-slide championship finals script and presenter notes.
-* [**presentation/Takomo_Pocket_Fitter_Finals.pptx**](docs/presentation/Takomo_Pocket_Fitter_Finals.pptx): Production 16:9 widescreen PowerPoint deck with brand styling.
-* [**test_predictions/takomo_test_predictions.csv**](docs/test_predictions/takomo_test_predictions.csv): Predictions for all 5,000 unlabelled benchmark test golfers.
+* [**Hackathon Submission Portal Entry**](docs/00_HACKATHON_SUBMISSION.md): Official submission portal fields (Tagline, About, Tech stack, links).
+* [**Executive Summary (1-Pager)**](docs/01_ONE_PAGE_EXECUTIVE_SUMMARY.md): Required 1-page executive writeup (Slide 16 of Challenge Brief).
+* [**Architecture & System Specification**](docs/02_ARCHITECTURE_AND_SYSTEM_SPEC.md): Complete engineering architecture and zero-egress protocol.
+* [**Fitting Engine Mathematics & Calibration**](docs/03_FITTING_ENGINE_MATHEMATICS_AND_CALIBRATION.md): Linear-Gaussian conjugate math, ECE proofs, and EVOI formulations.
+* [**Computer Vision & Biomechanics Pipeline**](docs/04_COMPUTER_VISION_AND_BIOMECHANICS.md): ISO card geometry, MediaPipe edge vision, and ball-line impact analysis.
+* [**API Reference & Integration Guide**](docs/05_API_REFERENCE_AND_INTEGRATION.md): OpenAPI endpoint specifications and headless Shopify cart injection.
+* [**Production Pilot & Business Case**](docs/06_PRODUCTION_PILOT_AND_BUSINESS_CASE.md): Financial model (+€3.8M–€7.4M/yr net gain) and 4-phase rollout plan.
+* [**Finals Pitch Deck Script**](docs/07_FINALS_PITCH_DECK.md): 10-slide championship finals script and presenter notes.
+* [**Demo Video & Voiceover Script**](docs/08_DEMO_VOICE_OVER.md): 3-minute video pitch, trust gap analysis, user journey, and honest validation.
+* [**Championship Pitch Deck (16:9 PPTX)**](docs/presentation/Takomo_Pocket_Fitter_Finals.pptx): Production 16:9 widescreen PowerPoint deck with brand styling.
+* [**Benchmark Test Predictions (5,000 Golfers)**](docs/test_predictions/takomo_test_predictions.csv): Predictions for all 5,000 unlabelled benchmark test golfers.
 
 ---
 
