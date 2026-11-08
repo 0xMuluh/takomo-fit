@@ -232,7 +232,7 @@ export function FitterSays({ children }: { children: ReactNode }) {
   const l = useI18n();
   return (
     <div className="flex items-end gap-2">
-      <div className="grid size-8 shrink-0 place-items-center rounded-full bg-fairway text-paper" title={l.t.fitter.role}>
+      <div className="grid size-8 shrink-0 place-items-center rounded-full bg-accent text-ink" title={l.t.fitter.role}>
         <GolferStickman className="size-4.5" />
       </div>
       <div className="max-w-[85%] rounded-2xl rounded-bl-md bg-white px-4 py-2.5 text-[15px] leading-snug shadow-sm">{children}</div>

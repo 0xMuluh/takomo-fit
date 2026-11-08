@@ -70,7 +70,7 @@ Takomo sells forged, premium golf clubs direct to golfers across 109 countries w
 | Studio entry & session resume | Biomechanics & posture tracking |
 |:---:|:---:|
 | <img src="docs/assets/studio_start.png" alt="Takomo Studio Start" width="460" /> | <img src="docs/assets/golfer_biomechanics_schematic.png" alt="Biomechanical Telemetry Schematic" width="460" /> |
-| *Clean studio interface matching Takomo's dark aesthetic.* | *On-device MediaPipe landmark extraction, ISO card millimeter scale factor, and swing kinematics.* |
+| *Direct-to-consumer digital studio on Takomo Golf shop.* | *On-device MediaPipe landmark extraction, ISO card millimeter scale factor, and swing kinematics.* |
 
 </div>
 
