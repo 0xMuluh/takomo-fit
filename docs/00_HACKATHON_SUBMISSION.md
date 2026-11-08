@@ -88,7 +88,7 @@ Next.js, FastAPI, MediaPipe, ElevenLabs, Scikit-learn, TypeScript, Python, Docke
 |---|---|---|
 | Source | repo / zip excluding `node_modules`, `.venv` | Clean GitHub repository |
 | Demo video | — | Walkthrough recording (optional) |
-| Pitch deck | [Finals pitch deck (PPTX)](presentation/Takomo_Pocket_Fitter_Finals.pptx) | Regenerate from `generate_deck.py` if needed |
+| Pitch deck | [Finals pitch deck (PDF)](presentation/Takomo_Pocket_Fitter_Finals.pdf) | 10-slide championship deck ([PPTX source](presentation/Takomo_Pocket_Fitter_Finals.pptx)) |
 | Supporting doc | [Executive summary (1-pager)](01_ONE_PAGE_EXECUTIVE_SUMMARY.md) | Official 1-page writeup |
 | Test predictions | [Benchmark test predictions (CSV)](test_predictions/takomo_test_predictions.csv) | Lab `data/test` (5,000 unlabelled) |
 

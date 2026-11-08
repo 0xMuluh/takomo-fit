@@ -48,7 +48,7 @@
 | [**Production pilot & business case**](06_PRODUCTION_PILOT_AND_BUSINESS_CASE.md) | D2C economic models, return reduction economics, pilot rollout gates | Product & executive |
 | [**Finals pitch deck script**](07_FINALS_PITCH_DECK.md) | 10-slide championship finals script and presenter notes | Presenters |
 | [**Demo video & voiceover script**](08_DEMO_VOICE_OVER.md) | 3-minute video pitch: trust gap, build decisions, demo journey, honest validation | Presenters & video |
-| [**Championship pitch deck (16:9 PPTX)**](presentation/Takomo_Pocket_Fitter_Finals.pptx) | Generated deck (rebuild via `presentation/generate_deck.py`) | Presenters |
+| [**Championship pitch deck (PDF)**](presentation/Takomo_Pocket_Fitter_Finals.pdf) | 10-slide championship finals presentation ([PPTX source](presentation/Takomo_Pocket_Fitter_Finals.pptx)) | Presenters |
 | [**Benchmark test predictions (5,000 golfers)**](test_predictions/takomo_test_predictions.csv) | Offline model predictions for lab `data/test` benchmark golfers | Evaluation |
 
 ---

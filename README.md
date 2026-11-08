@@ -290,7 +290,7 @@ All technical documents, benchmark datasets, and pitch deliverables are hosted i
 * [**Production pilot & business case**](docs/06_PRODUCTION_PILOT_AND_BUSINESS_CASE.md): Financial model (+€3.8M–€7.4M/yr net gain) and 4-phase rollout plan.
 * [**Finals pitch deck script**](docs/07_FINALS_PITCH_DECK.md): 10-slide championship finals script and presenter notes.
 * [**Demo video & voiceover script**](docs/08_DEMO_VOICE_OVER.md): 3-minute video pitch, trust gap analysis, user journey, and honest validation.
-* [**Championship pitch deck (16:9 PPTX)**](docs/presentation/Takomo_Pocket_Fitter_Finals.pptx): Production 16:9 widescreen PowerPoint deck with brand styling.
+* [**Championship pitch deck (PDF)**](docs/presentation/Takomo_Pocket_Fitter_Finals.pdf): 10-slide championship finals presentation deck ([PPTX source](docs/presentation/Takomo_Pocket_Fitter_Finals.pptx)).
 * [**Benchmark test predictions (5,000 golfers)**](docs/test_predictions/takomo_test_predictions.csv): Predictions for all 5,000 unlabelled benchmark test golfers.
 
 ---

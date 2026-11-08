@@ -19,7 +19,7 @@
 
 **Live demo:** [https://takomo-fitter.web.app/](https://takomo-fitter.web.app/)  
 **Code repository:** [https://github.com/0xMuluh/takomo-fit](https://github.com/0xMuluh/takomo-fit)  
-**Slide presentation deck:** `docs/presentation/Takomo_Pocket_Fitter_Finals.pptx` (rebuild via `generate_deck.py`)
+**Slide presentation deck (PDF):** [`docs/presentation/Takomo_Pocket_Fitter_Finals.pdf`](presentation/Takomo_Pocket_Fitter_Finals.pdf) · [PowerPoint PPTX](presentation/Takomo_Pocket_Fitter_Finals.pptx)
 
 ---
 
