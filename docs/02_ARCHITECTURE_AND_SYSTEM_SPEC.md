@@ -1,17 +1,12 @@
 <div align="center">
 
-<a href="../README.md">
-  <img alt="Takomo Fit" src="assets/takomo_fit_header.png" height="42">
-</a>
-
 <p align="center">
-  <strong>The AI Pro-Fitter in Your Pocket</strong><br>
-  <em>Multimodal Voice Consultation · Zero-Print Smartphone Vision · Calibrated Bayesian Fitting</em>
+  <a href="../README.md"><img alt="Takomo Fit" src="assets/takomo_fit_header.png" height="34" align="absmiddle"></a> &nbsp;•&nbsp; <strong>The Fitter in Your Pocket</strong>
 </p>
 
 <p align="center">
-  <a href="../README.md">« Home</a> ·
-  <a href="README.md">Docs Index</a> ·
+  <a href="../README.md">Home</a> ·
+  <a href="README.md">Docs</a> ·
   <a href="https://takomo-fitter.web.app/">Live App</a> ·
   <a href="https://github.com/0xMuluh/takomo-fit">GitHub</a>
 </p>
@@ -20,13 +15,13 @@
 
 ---
 
-# Architecture & System Specification
+# Architecture & system specification
 
 **App:** Takomo Pocket Fitter · Next.js Frontend + FastAPI Fitting Engine (`pocketfit`)
 
 ---
 
-## 1. System Topology
+## 1. System topology
 
 ```mermaid
 flowchart TD
@@ -68,7 +63,7 @@ Core application routes:
 
 ---
 
-## 2. Zero-Egress Client-Side Computer Vision
+## 2. Zero-egress client-side computer vision
 
 Pose tracking, hand span measurement, ISO/IEC 7810 ID-1 card bounding, swing tempo extraction, and 4-point ball-line geometry run entirely on-device within the browser via WebAssembly (WASM).
 
@@ -78,7 +73,7 @@ Launch-monitor **screen photo / video import** is an isolated server route (`/v1
 
 ---
 
-## 3. Conversational Voice Architecture
+## 3. Conversational voice architecture
 
 1. Browser requests an authenticated session via **`GET /v1/voice/session`** (with optional `fit_id`).
 2. The engine fetches an ephemeral signed WebSocket URL from ElevenLabs; all API keys remain server-side.
@@ -87,7 +82,7 @@ Launch-monitor **screen photo / video import** is an isolated server route (`/v1
 
 ---
 
-## 4. Desktop-to-Mobile Handoff Protocol
+## 4. Desktop-to-mobile handoff protocol
 
 ```mermaid
 sequenceDiagram
@@ -113,27 +108,27 @@ Handoff sessions are managed with a strict Time-to-Live (TTL); expired sessions 
 
 ---
 
-## 5. Fitting Pipeline Lifecycle
+## 5. Fitting pipeline lifecycle
 
-1. **Questionnaire Intake:** `POST /v1/fits` (`FitRequest`).
-2. **Progressive Evidence Fusion:** `POST /v1/fits/{id}/evidence`.
-3. **Posterior Sampling & Rules:** `FitResponse` returns specs, confidence distributions, reasons, stock vs. custom advice, and expected value of information (EVOI) next-test suggestions.
-4. **Interactive What-If Playground:** `POST /v1/fits/{id}/what-if` (`Overrides`).
+1. **Questionnaire intake:** `POST /v1/fits` (`FitRequest`).
+2. **Progressive evidence fusion:** `POST /v1/fits/{id}/evidence`.
+3. **Posterior sampling & rules:** `FitResponse` returns specs, confidence distributions, reasons, stock vs. custom advice, and expected value of information (EVOI) next-test suggestions.
+4. **Interactive what-if playground:** `POST /v1/fits/{id}/what-if` (`Overrides`).
 
 ---
 
-## 6. Operational Security & Controls
+## 6. Operational security & controls
 
-| Security Control | Implementation Mechanism |
+| Security control | Implementation mechanism |
 |---|---|
-| **Voice Session Security** | Ephemeral HMAC signed URLs; API credentials never exposed to client |
-| **DDoS & Abuse Prevention** | Per-IP hourly sliding-window rate limiters on voice, handoff, and OCR |
-| **Data Integrity** | Strict Pydantic boundary validation across all schema inputs |
-| **Zero Biometric Retention** | On-device MediaPipe inference; zero video or facial image egress |
-| **State Persistence** | Transient in-memory or file-backed storage decoupled from cloud state |
+| **Voice session security** | Ephemeral HMAC signed URLs; API credentials never exposed to client |
+| **DDoS & abuse prevention** | Per-IP hourly sliding-window rate limiters on voice, handoff, and OCR |
+| **Data integrity** | Strict Pydantic boundary validation across all schema inputs |
+| **Zero biometric retention** | On-device MediaPipe inference; zero video or facial image egress |
+| **State persistence** | Transient in-memory or file-backed storage decoupled from cloud state |
 
 ---
 
 <div align="center">
-  <sub>Takomo Pocket Fitter · Built for the <strong>Since AI Hackathon 2026</strong> in partnership with <strong>Takomo Golf</strong></sub>
+  <sub>Takomo Pocket Fitter · Built with ❤️ for the <strong>Since AI Hackathon 2026</strong> in partnership with <strong>Takomo Golf</strong></sub>
 </div>

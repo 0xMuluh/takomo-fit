@@ -25,7 +25,7 @@ const fi: Messages = {
   home: {
     kicker: "Takomo Golf",
     title: "Sovittaja taskussasi.",
-    intro: `Tapaa ${N}, Takomon tekoälysovittaja. Live-sovitus 7-raudalle puhelimellasi.`,
+    intro: `Tapaa ${N}, Takomon tekoälysovittaja. Live-sovitus 7-raudalle milloin ja missä vain.`,
     steps: [
       [`Juttele ${N}n kanssa`, "Puhuen tai kirjoittaen."],
       ["Mittaukset", "Puhelimen kameralla."],

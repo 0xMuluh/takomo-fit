@@ -1,17 +1,12 @@
 <div align="center">
 
-<a href="../README.md">
-  <img alt="Takomo Fit" src="assets/takomo_fit_header.png" height="42">
-</a>
-
 <p align="center">
-  <strong>The AI Pro-Fitter in Your Pocket</strong><br>
-  <em>Multimodal Voice Consultation · Zero-Print Smartphone Vision · Calibrated Bayesian Fitting</em>
+  <a href="../README.md"><img alt="Takomo Fit" src="assets/takomo_fit_header.png" height="34" align="absmiddle"></a> &nbsp;•&nbsp; <strong>The Fitter in Your Pocket</strong>
 </p>
 
 <p align="center">
-  <a href="../README.md">« Home</a> ·
-  <a href="README.md">Docs Index</a> ·
+  <a href="../README.md">Home</a> ·
+  <a href="README.md">Docs</a> ·
   <a href="https://takomo-fitter.web.app/">Live App</a> ·
   <a href="https://github.com/0xMuluh/takomo-fit">GitHub</a>
 </p>
@@ -20,7 +15,7 @@
 
 ---
 
-# Hackathon Submission Portal Entry
+# Hackathon submission portal entry
 
 **Challenge:** The Fitter in Your Pocket · Takomo Golf  
 **Live app:** [https://takomo-fitter.web.app/](https://takomo-fitter.web.app/)  
@@ -30,7 +25,7 @@
 
 ## 1. Project information
 
-### Project Name *
+### Project name *
 ```text
 Takomo Pocket Fitter
 ```
@@ -43,7 +38,7 @@ Phone vision + voice fit for Takomo irons: measured evidence, N=800 Monte Carlo 
 
 ---
 
-### About the Project * (max 5,000 characters)
+### About the project * (max 5,000 characters)
 ```text
 PROBLEM
 Takomo sells D2C forged clubs (€70M+, 109 countries). Over 25% of iron orders go through the online fitter; 600k+ fittings in six months. The live tool is a questionnaire: height, wrist-to-floor, glove, speed or 7-iron carry, score, flight. Self-report is noisy — lab SIMULATOR: median carry over-report 15 yd; brand loft gaps can move carry ~12 m. The tool returns a spec without measured evidence or a clear why. Custom builds have no 30-day return.
@@ -72,7 +67,7 @@ Shopify cart line-item handoff (not shipped). Full-bag (driver/wedge) later. Opt
 
 ---
 
-## 2. Built With *
+## 2. Built with *
 ```text
 Next.js, FastAPI, MediaPipe, ElevenLabs, Scikit-learn, TypeScript, Python, Docker
 ```
@@ -93,9 +88,9 @@ Next.js, FastAPI, MediaPipe, ElevenLabs, Scikit-learn, TypeScript, Python, Docke
 |---|---|---|
 | Source | repo / zip excluding `node_modules`, `.venv` | Clean GitHub repository |
 | Demo video | — | Walkthrough recording (optional) |
-| Pitch deck | [Finals Pitch Deck (PPTX)](presentation/Takomo_Pocket_Fitter_Finals.pptx) | Regenerate from `generate_deck.py` if needed |
-| Supporting doc | [Executive Summary (1-Pager)](01_ONE_PAGE_EXECUTIVE_SUMMARY.md) | Official 1-page writeup |
-| Test predictions | [Benchmark Test Predictions (CSV)](test_predictions/takomo_test_predictions.csv) | Lab `data/test` (5,000 unlabelled) |
+| Pitch deck | [Finals pitch deck (PPTX)](presentation/Takomo_Pocket_Fitter_Finals.pptx) | Regenerate from `generate_deck.py` if needed |
+| Supporting doc | [Executive summary (1-pager)](01_ONE_PAGE_EXECUTIVE_SUMMARY.md) | Official 1-page writeup |
+| Test predictions | [Benchmark test predictions (CSV)](test_predictions/takomo_test_predictions.csv) | Lab `data/test` (5,000 unlabelled) |
 
 ---
 
@@ -107,5 +102,5 @@ Next.js, FastAPI, MediaPipe, ElevenLabs, Scikit-learn, TypeScript, Python, Docke
 ---
 
 <div align="center">
-  <sub>Takomo Pocket Fitter · Built for the <strong>Since AI Hackathon 2026</strong> in partnership with <strong>Takomo Golf</strong></sub>
+  <sub>Takomo Pocket Fitter · Built with ❤️ for the <strong>Since AI Hackathon 2026</strong> in partnership with <strong>Takomo Golf</strong></sub>
 </div>

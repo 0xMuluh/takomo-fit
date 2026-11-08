@@ -25,7 +25,7 @@ const de: Messages = {
   home: {
     kicker: "Takomo Golf",
     title: "Der Fitter für die Hosentasche.",
-    intro: `Lerne ${N} kennen, Takomos KI-Fitter. Ein Live-Fitting für dein Eisen 7 am Handy.`,
+    intro: `Lerne ${N} kennen, Takomos KI-Fitter. Ein Live-Fitting für dein Eisen 7 jederzeit und überall.`,
     steps: [
       [`Sprich mit ${N}`, "Per Stimme oder Text."],
       ["Lass dich vermessen", "Mit der Handykamera."],

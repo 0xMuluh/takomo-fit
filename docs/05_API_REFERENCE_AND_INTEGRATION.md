@@ -1,17 +1,12 @@
 <div align="center">
 
-<a href="../README.md">
-  <img alt="Takomo Fit" src="assets/takomo_fit_header.png" height="42">
-</a>
-
 <p align="center">
-  <strong>The AI Pro-Fitter in Your Pocket</strong><br>
-  <em>Multimodal Voice Consultation · Zero-Print Smartphone Vision · Calibrated Bayesian Fitting</em>
+  <a href="../README.md"><img alt="Takomo Fit" src="assets/takomo_fit_header.png" height="34" align="absmiddle"></a> &nbsp;•&nbsp; <strong>The Fitter in Your Pocket</strong>
 </p>
 
 <p align="center">
-  <a href="../README.md">« Home</a> ·
-  <a href="README.md">Docs Index</a> ·
+  <a href="../README.md">Home</a> ·
+  <a href="README.md">Docs</a> ·
   <a href="https://takomo-fitter.web.app/">Live App</a> ·
   <a href="https://github.com/0xMuluh/takomo-fit">GitHub</a>
 </p>
@@ -20,16 +15,16 @@
 
 ---
 
-# API Reference & Integration Guide
+# API reference & integration guide
 
 **Contracts:** `pocket-fitter/engine/src/pocketfit/schemas.py`, `api.py`  
-**Base URL / Proxy:** `https://takomo-fitter.web.app/api/pf` $\to$ FastAPI Engine
+**Base URL / proxy:** `https://takomo-fitter.web.app/api/pf` $\to$ FastAPI Engine
 
 All field definitions match Pydantic strict schemas.
 
 ---
 
-## 1. Core Endpoints
+## 1. Core endpoints
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -49,11 +44,11 @@ All field definitions match Pydantic strict schemas.
 | `POST` | `/v1/launch-monitor/video` | Launch monitor video extraction |
 | `POST` | `/v1/launch-monitor/report` | Ingest external TrackMan / FlightScope shared report URL |
 
-*Agent Endpoints (Protected by `X-Agent-Secret`):* `POST /v1/agent/summary`, `explain`, `what-if`, `next-test`, `compare-heads`.
+*Agent endpoints (protected by `X-Agent-Secret`):* `POST /v1/agent/summary`, `explain`, `what-if`, `next-test`, `compare-heads`.
 
 ---
 
-## 2. Fit Initiation — `POST /v1/fits`
+## 2. Fit initiation — `POST /v1/fits`
 
 ```json
 {
@@ -82,7 +77,7 @@ All field definitions match Pydantic strict schemas.
 
 ---
 
-## 3. Multimodal Evidence Ingestion — `POST /v1/fits/{id}/evidence`
+## 3. Multimodal evidence ingestion — `POST /v1/fits/{id}/evidence`
 
 ```json
 {
@@ -117,7 +112,7 @@ All field definitions match Pydantic strict schemas.
 
 ---
 
-## 4. Conversational Voice Authentication — `GET /v1/voice/session`
+## 4. Conversational voice authentication — `GET /v1/voice/session`
 
 * Returns ephemeral HMAC signature: `{"signed_url": "...", "fit_id": "..."}`.
 * ElevenLabs API keys remain strictly quarantined in engine environment variables.
@@ -125,7 +120,7 @@ All field definitions match Pydantic strict schemas.
 
 ---
 
-## 5. Headless Shopify Cart Integration (Storefront Roadmap)
+## 5. Headless Shopify cart integration (storefront roadmap)
 
 Planned production handoff serializes the finalized `FitResponse.spec` into custom line-item properties for headless Shopify Cart API ingestion:
 * `_fit_id`: Cryptographic fit session identifier
@@ -139,5 +134,5 @@ Planned production handoff serializes the finalized `FitResponse.spec` into cust
 ---
 
 <div align="center">
-  <sub>Takomo Pocket Fitter · Built for the <strong>Since AI Hackathon 2026</strong> in partnership with <strong>Takomo Golf</strong></sub>
+  <sub>Takomo Pocket Fitter · Built with ❤️ for the <strong>Since AI Hackathon 2026</strong> in partnership with <strong>Takomo Golf</strong></sub>
 </div>

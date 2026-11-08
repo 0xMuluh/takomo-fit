@@ -25,7 +25,7 @@ const sv: Messages = {
   home: {
     kicker: "Takomo Golf",
     title: "Fittern i fickan.",
-    intro: `Möt ${N}, Takomos AI-fitter. En live-fitting av ditt 7-järn i mobilen.`,
+    intro: `Möt ${N}, Takomos AI-fitter. En live-fitting av ditt 7-järn när som helst, var som helst.`,
     steps: [
       [`Prata med ${N}`, "Med rösten eller i text."],
       ["Bli mätt", "Med mobilens kamera."],

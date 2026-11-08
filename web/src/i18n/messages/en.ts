@@ -21,7 +21,7 @@ const en = {
   home: {
     kicker: "Takomo Fit",
     title: "The fitter in your pocket.",
-    intro: `Meet ${N}, Takomo's AI fitter. A live 7-iron fitting on your phone.`,
+    intro: `Meet ${N}, Takomo's AI fitter. A live 7-iron fitting anytime, anywhere.`,
     steps: [
       [`Talk to ${N}`, "Voice or text."],
       ["Get measured", "Through your phone's camera."],

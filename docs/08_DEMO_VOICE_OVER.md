@@ -1,17 +1,12 @@
 <div align="center">
 
-<a href="../README.md">
-  <img alt="Takomo Fit" src="assets/takomo_fit_header.png" height="42">
-</a>
-
 <p align="center">
-  <strong>The AI Pro-Fitter in Your Pocket</strong><br>
-  <em>Multimodal Voice Consultation · Zero-Print Smartphone Vision · Calibrated Bayesian Fitting</em>
+  <a href="../README.md"><img alt="Takomo Fit" src="assets/takomo_fit_header.png" height="34" align="absmiddle"></a> &nbsp;•&nbsp; <strong>The Fitter in Your Pocket</strong>
 </p>
 
 <p align="center">
-  <a href="../README.md">« Home</a> ·
-  <a href="README.md">Docs Index</a> ·
+  <a href="../README.md">Home</a> ·
+  <a href="README.md">Docs</a> ·
   <a href="https://takomo-fitter.web.app/">Live App</a> ·
   <a href="https://github.com/0xMuluh/takomo-fit">GitHub</a>
 </p>
@@ -20,19 +15,19 @@
 
 ---
 
-# Demo Video & Voiceover Script
+# Demo video & voiceover script
 
-**Live Application:** [https://takomo-fitter.web.app/](https://takomo-fitter.web.app/)  
-**Main Presentation Cut:** Up to 3 minutes  
-**Short Teaser Cut:** ~45 seconds
+**Live application:** [https://takomo-fitter.web.app/](https://takomo-fitter.web.app/)  
+**Main presentation cut:** Up to 3 minutes  
+**Short teaser cut:** ~45 seconds
 
 The narrative follows a dual journey: why the D2C trust gap matters to an online golfer, and how Pocket Fitter connects conversational voice, smartphone vision measurements, and a Bayesian fitting engine.
 
 ---
 
-## Main Cut (Up to 3 Minutes)
+## Main cut (up to 3 minutes)
 
-| Timestamp | Visual Track | Voiceover Track |
+| Timestamp | Visual track | Voiceover track |
 |---|---|---|
 | **0:00–0:25** | Open on a golfer hesitating over online fitting forms. Close-up on the swing speed question and Takomo product page. | *“Imagine buying irons online. The fitter asks your swing speed; you don't know it, so you guess. The result gives a spec without showing why. If it calls for custom, it can't be returned. Takomo had over 600,000 online fittings in six months; more than 25 percent of iron orders already use the fitter.”* |
 | **0:25–0:54** | Cut to the challenge brief, Takomo product catalog, the five fitting dimensions, and real build clips. | *“The challenge: make online fitting feel closer to an hour with a professional. From Takomo's catalog and fitting rules, we mapped five choices: head, shaft, length, lie and grip. Ilmari gathers the golfer's context, phone tools add measurements, and the engine turns both into a buildable spec. Keeping the engine as the source of truth means its reasons match what the voice and screen say.”* |
@@ -44,21 +39,21 @@ The narrative follows a dual journey: why the D2C trust gap matters to an online
 
 ---
 
-## Short Teaser Cut (~45 Seconds)
+## Short teaser cut (~45 seconds)
 
 > *“Imagine buying irons online and having to guess your swing speed. Pocket Fitter starts with a conversation, then adds measurements from your phone. A bank card helps measure hand length; three swings add tempo. For lie, mark a ball, hit a few shots, photograph the clubface and tap four points. The result is a buildable Takomo spec with reasons and confidence; close calls stay visible. Testing on synthetic challenge golfers is promising, but it isn't pro-fitter validation. Real-golfer testing and a direct cart handoff are next.”*
 
 ---
 
-## Recording & Production Guidelines
+## Recording & production guidelines
 
-1. **Chronological Structure:** Golfer uncertainty $\to$ engineered solution $\to$ measurement journey $\to$ verified spec $\to$ roadmap.
-2. **Honest Footage:** Capture real UI interactions from the running Next.js application; avoid fabricated mockups.
-3. **Privacy Assurance:** Emphasize that all MediaPipe landmark extraction runs locally via WebAssembly on the device.
-4. **Benchmark Context:** Ensure the synthetic simulator evaluation disclaimer is legible whenever benchmark metrics are cited.
+1. **Chronological structure:** Golfer uncertainty $\to$ engineered solution $\to$ measurement journey $\to$ verified spec $\to$ roadmap.
+2. **Honest footage:** Capture real UI interactions from the running Next.js application; avoid fabricated mockups.
+3. **Privacy assurance:** Emphasize that all MediaPipe landmark extraction runs locally via WebAssembly on the device.
+4. **Benchmark context:** Ensure the synthetic simulator evaluation disclaimer is legible whenever benchmark metrics are cited.
 
 ---
 
 <div align="center">
-  <sub>Takomo Pocket Fitter · Built for the <strong>Since AI Hackathon 2026</strong> in partnership with <strong>Takomo Golf</strong></sub>
+  <sub>Takomo Pocket Fitter · Built with ❤️ for the <strong>Since AI Hackathon 2026</strong> in partnership with <strong>Takomo Golf</strong></sub>
 </div>
